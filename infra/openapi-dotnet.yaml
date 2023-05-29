@@ -1,0 +1,252 @@
+openapi: 3.0.1
+
+info:
+  title: GitHub Issues API
+  version: v1
+
+servers:
+  - url: https://localhost:5051
+
+tags:
+  - name: Issues
+    description: Related to GitHub issues
+
+paths:
+  /api/github/issues:
+    get:
+      tags:
+        - Issues
+      operationId: Issues
+      parameters:
+        - name: User
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: Repository
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/GitHubIssueCollectionResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitHubIssueCollectionResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/GitHubIssueCollectionResponse'
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/github/issues/{id}:
+    get:
+      tags:
+        - Issues
+      operationId: IssueById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: User
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: Repository
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/GitHubIssueItemResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitHubIssueItemResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/GitHubIssueItemResponse'
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/github/issues/{id}/summary:
+    get:
+      tags:
+        - Issues
+      operationId: IssueSummaryById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: User
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: Repository
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/GitHubIssueItemSummaryResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitHubIssueItemSummaryResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/GitHubIssueItemSummaryResponse'
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          nullable: true
+    GitHubIssueCollectionResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GitHubIssueItemResponse'
+          nullable: true
+    GitHubIssueItemResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          nullable: true
+        number:
+          type: integer
+          format: int32
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        body:
+          type: string
+          nullable: true
+    GitHubIssueItemSummaryResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          nullable: true
+        number:
+          type: integer
+          format: int32
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        body:
+          type: string
+          nullable: true
+        summary:
+          type: string
+          nullable: true
+  securitySchemes:
+    github_token:
+      type: apiKey
+      description: Please enter valid GitHub Token
+      name: x-github-token
+      in: header
+    api_key:
+      type: apiKey
+      description: Please enter valid API Key
+      name: x-webapi-key
+      in: header
+security:
+  - github_token: []
+  - api_key: []

@@ -10,28 +10,18 @@
 -->
 <policies>
   <inbound>
-    <cors allow-credentials="true">
-      <allowed-origins>
-        <origin>https://apim-{{AZURE_ENV_NAME}}.azure-api.net</origin>
-        <origin>https://{{STTAPP_URL}}</origin>
-      </allowed-origins>
-      <allowed-methods>
-        <method>*</method>
-      </allowed-methods>
-      <allowed-headers>
-        <header>*</header>
-      </allowed-headers>
-      <expose-headers>
-        <header>*</header>
-      </expose-headers>
-    </cors>
-    <set-header name="x-webapi-key" exists-action="override">
-      <value>{{APPSVC_KEY}}</value>
+    <base />
+    <set-header name="x-aoai-token" exists-action="override">
+      <value>{{AOAI_TOKEN}}</value>
     </set-header>
   </inbound>
   <backend>
-    <forward-request />
+    <base />
   </backend>
-  <outbound />
-  <on-error />
+  <outbound>
+    <base />
+  </outbound>
+  <on-error>
+    <base />
+  </on-error>
 </policies>

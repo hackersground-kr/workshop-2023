@@ -1,0 +1,109 @@
+openapi: 3.0.1
+
+info:
+  title: GitHub Issue Storage API
+  version: v1
+
+servers:
+  - url: https://localhost:5053
+
+tags:
+  - name: Storage
+    description: Related to GitHub issues storage
+
+paths:
+  /api/storage:
+    post:
+      tags:
+        - Storage
+      operationId: Storage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StorageRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StorageResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          nullable: true
+    StorageRequest:
+      required:
+        - id
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          nullable: false
+        issueId:
+          type: integer
+          format: int32
+          nullable: true
+        issueNumber:
+          type: integer
+          format: int32
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        body:
+          type: string
+          nullable: true
+        summary:
+          type: string
+          nullable: true
+    StorageResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          nullable: false
+        issueId:
+          type: integer
+          format: int32
+          nullable: true
+        issueNumber:
+          type: integer
+          format: int32
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        body:
+          type: string
+          nullable: true
+        summary:
+          type: string
+          nullable: true
+  securitySchemes:
+    api_key:
+      type: apiKey
+      description: Please enter valid API Key
+      name: x-webapi-key
+      in: header
+security:
+  - api_key: []

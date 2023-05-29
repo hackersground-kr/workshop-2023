@@ -29,10 +29,19 @@ resource aoai 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
     }
 }
 
-// ⬇️ copilot demo ⬇️
-
-
-// ⬆️ copilot demo ⬆️
+resource openaiDeployment 'Microsoft.CognitiveServices/accounts/deployments@2022-12-01' = [for model in openai.models: {
+  name: '${aoai.name}/${model.deploymentName}'
+  properties: {
+    model: {
+      format: 'OpenAI'
+      name: model.name
+      version: model.version
+    }
+    scaleSettings: {
+      scaleType: 'Standard'
+    }
+  }
+}]
 
 output id string = aoai.id
 output name string = aoai.name
