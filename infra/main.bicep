@@ -21,6 +21,12 @@ resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // }
 
 // 3 app services - .NET, Java, Python
+var apps = [
+  {
+    suffix: 'dotnet'
+    useAoai: false
+  }
+]
 
 module appsvc './provision-appService.bicep' = {
   name: 'AppService'
