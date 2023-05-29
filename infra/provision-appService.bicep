@@ -1,14 +1,15 @@
 param name string
 param location string = resourceGroup().location
 
-@secure()
-param aoaiApiKey string
+param linuxFxVersion string = 'DOTNETCORE|7.0'
+
+param useAoai bool = false
 param aoaiApiEndpoint string
 param aoaiApiVersion string = '2022-12-01'
 param aoaiApiDeploymentId string
 
 module wrkspc './logAnalyticsWorkspace.bicep' = {
-  name: 'LogAnalyticsWorkspace_AppService'
+  name: 'LogAnalyticsWorkspace_AppService_${name}'
   params: {
     name: '${name}-api'
     location: location
@@ -16,7 +17,7 @@ module wrkspc './logAnalyticsWorkspace.bicep' = {
 }
 
 module appins './applicationInsights.bicep' = {
-  name: 'ApplicationInsights_AppService'
+  name: 'ApplicationInsights_AppService_${name}'
   params: {
     name: '${name}-api'
     location: location
@@ -25,7 +26,7 @@ module appins './applicationInsights.bicep' = {
 }
 
 module asplan './appServicePlan.bicep' = {
-  name: 'AppServicePlan_AppService'
+  name: 'AppServicePlan_AppService_${name}'
   params: {
     name: '${name}-api'
     location: location
@@ -33,14 +34,15 @@ module asplan './appServicePlan.bicep' = {
 }
 
 module appsvc './appService.bicep' = {
-  name: 'AppService_AppService'
+  name: 'AppService_AppService_${name}'
   params: {
     name: '${name}-api'
     location: location
+    linuxFxVersion: linuxFxVersion
     appInsightsInstrumentationKey: appins.outputs.instrumentationKey
     appInsightsConnectionString: appins.outputs.connectionString
     appServicePlanId: asplan.outputs.id
-    aoaiApiKey: aoaiApiKey
+    useAoai: useAoai
     aoaiApiEndpoint: aoaiApiEndpoint
     aoaiApiVersion: aoaiApiVersion
     aoaiApiDeploymentId: aoaiApiDeploymentId

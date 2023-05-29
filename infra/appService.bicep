@@ -1,6 +1,8 @@
 param name string
 param location string = resourceGroup().location
 
+param linuxFxVersion string = 'DOTNETCORE|7.0'
+
 param appServicePlanId string
 
 @secure()
@@ -8,8 +10,7 @@ param appInsightsInstrumentationKey string
 @secure()
 param appInsightsConnectionString string
 
-@secure()
-param aoaiApiKey string
+param useAoai bool = false
 param aoaiApiEndpoint string
 param aoaiApiVersion string = '2022-12-01'
 param aoaiApiDeploymentId string
@@ -24,15 +25,45 @@ var appInsights = {
 }
 
 var aoai = {
-  apiKey: aoaiApiKey
   endpoint: aoaiApiEndpoint
   apiVersion: aoaiApiVersion
   deploymentId: aoaiApiDeploymentId
 }
 
+var commonAppSettings = [
+  // Common Settings
+  {
+    name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+    value: appInsights.instrumentationKey
+  }
+  {
+    name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+    value: appInsights.connectionString
+  }
+]
+var appSettings = concat(commonAppSettings, useAoai ? [
+  // Azure OpenAI Service
+  {
+    name: 'AOAI_API_ENDPOINT'
+    value: aoai.endpoint
+  }
+  {
+    name: 'AOAI_API_VERSION'
+    value: aoai.apiVersion
+  }
+  {
+    name: 'AOAI_API_DEPLOYMENT_ID'
+    value: aoai.deploymentId
+  }
+] : [])
+
 var apiApp = {
   name: 'appsvc-${name}'
   location: location
+  siteConfig: {
+    linuxFxVersion: linuxFxVersion
+    appSettings: appSettings
+  }
 }
 
 resource appsvc 'Microsoft.Web/sites@2022-03-01' = {
@@ -44,36 +75,33 @@ resource appsvc 'Microsoft.Web/sites@2022-03-01' = {
     httpsOnly: true
     reserved: true
     siteConfig: {
-      linuxFxVersion: 'JAVA|17-java17'
+      linuxFxVersion: apiApp.siteConfig.linuxFxVersion
       alwaysOn: true
-      appSettings: [
-        // Common Settings
-        {
-          name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-          value: appInsights.instrumentationKey
-        }
-        {
-          name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-          value: appInsights.connectionString
-        }
-        // Azure OpenAI Service
-        {
-          name: 'AOAI_API_KEY'
-          value: aoai.apiKey
-        }
-        {
-          name: 'AOAI_API_ENDPOINT'
-          value: aoai.endpoint
-        }
-        {
-          name: 'AOAI_API_VERSION'
-          value: aoai.apiVersion
-        }
-        {
-          name: 'AOAI_API_DEPLOYMENT_ID'
-          value: aoai.deploymentId
-        }
-      ]
+      appSettings: apiApp.siteConfig.appSettings
+      // appSettings: [
+      //   // Common Settings
+      //   {
+      //     name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+      //     value: appInsights.instrumentationKey
+      //   }
+      //   {
+      //     name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+      //     value: appInsights.connectionString
+      //   }
+      //   // Azure OpenAI Service
+      //   {
+      //     name: 'AOAI_API_ENDPOINT'
+      //     value: aoai.endpoint
+      //   }
+      //   {
+      //     name: 'AOAI_API_VERSION'
+      //     value: aoai.apiVersion
+      //   }
+      //   {
+      //     name: 'AOAI_API_DEPLOYMENT_ID'
+      //     value: aoai.deploymentId
+      //   }
+      // ]
     }
   }
 }

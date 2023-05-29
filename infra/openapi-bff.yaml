@@ -51,12 +51,12 @@ paths:
         - Issues
       operationId: Issues
       parameters:
-        - name: User
+        - name: user
           in: query
           required: true
           schema:
             type: string
-        - name: Repository
+        - name: repository
           in: query
           required: true
           schema:
@@ -65,37 +65,19 @@ paths:
         '200':
           description: Success
           content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/GitHubIssueCollectionResponse'
             application/json:
-              schema:
-                $ref: '#/components/schemas/GitHubIssueCollectionResponse'
-            text/json:
               schema:
                 $ref: '#/components/schemas/GitHubIssueCollectionResponse'
         '401':
           description: Unauthorized
           content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
             application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-            text/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '403':
           description: Forbidden
           content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
             application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-            text/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
   /issues/{id}:
@@ -110,71 +92,12 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: User
+        - name: user
           in: query
           required: true
           schema:
             type: string
-        - name: Repository
-          in: query
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Success
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/GitHubIssueItemResponse'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GitHubIssueItemResponse'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/GitHubIssueItemResponse'
-        '401':
-          description: Unauthorized
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '403':
-          description: Forbidden
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-  /issues/{id}/summary:
-    get:
-      tags:
-        - Issues
-      operationId: IssueSummaryById
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int32
-        - name: User
-          in: query
-          required: true
-          schema:
-            type: string
-        - name: Repository
+        - name: repository
           in: query
           required: true
           schema:
@@ -183,37 +106,19 @@ paths:
         '200':
           description: Success
           content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/GitHubIssueItemSummaryResponse'
             application/json:
               schema:
-                $ref: '#/components/schemas/GitHubIssueItemSummaryResponse'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/GitHubIssueItemSummaryResponse'
+                $ref: '#/components/schemas/GitHubIssueItemResponse'
         '401':
           description: Unauthorized
           content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
             application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-            text/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '403':
           description: Forbidden
           content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
             application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-            text/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
   /storage:
@@ -290,26 +195,6 @@ components:
           type: string
           nullable: true
         body:
-          type: string
-          nullable: true
-    GitHubIssueItemSummaryResponse:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-          nullable: true
-        number:
-          type: integer
-          format: int32
-          nullable: true
-        title:
-          type: string
-          nullable: true
-        body:
-          type: string
-          nullable: true
-        summary:
           type: string
           nullable: true
     StorageRequest:

@@ -12,7 +12,7 @@ tags:
     description: Related to chat completion
 
 paths:
-  /api/chat/completions:
+  /chat/completions:
     post:
       tags:
         - Chat

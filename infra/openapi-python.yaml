@@ -12,7 +12,7 @@ tags:
     description: Related to GitHub issues storage
 
 paths:
-  /api/storage:
+  /issues:
     post:
       tags:
         - Storage
@@ -52,12 +52,20 @@ components:
     StorageRequest:
       required:
         - id
+        - user
+        - repository
       type: object
       properties:
         id:
           type: string
           format: uuid
-          nullable: false
+          nullable: true
+        user:
+          type: string
+          nullable: true
+        repository:
+          type: string
+          nullable: true
         issueId:
           type: integer
           format: int32
@@ -81,7 +89,13 @@ components:
         id:
           type: string
           format: uuid
-          nullable: false
+          nullable: true
+        user:
+          type: string
+          nullable: true
+        repository:
+          type: string
+          nullable: true
         issueId:
           type: integer
           format: int32

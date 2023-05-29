@@ -7,6 +7,10 @@ param appInsightsInstrumentationKey string
 
 param apiManagementPublisherName string
 param apiManagementPublisherEmail string
+@secure()
+param appServiceKey string
+@secure()
+param aoaiToken string
 
 @allowed([
   'rawxml'
@@ -46,6 +50,14 @@ var namedValues = [
   {
     name: 'STTAPP_URL'
     value: 'to_be_updated'
+  }
+  {
+    name: 'APPSVC_KEY'
+    value: appServiceKey
+  }
+  {
+    name: 'AOAI_TOKEN'
+    value: aoaiToken
   }
 ]
 

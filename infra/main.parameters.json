@@ -7,6 +7,9 @@
     },
     "location": {
       "value": "${AZURE_LOCATION}"
+    },
+    "appServiceKey": {
+      "value": "${AZURE_APPSERVICE_KEY}"
     }
   }
 }

@@ -3,6 +3,10 @@ param location string = resourceGroup().location
 
 param apiManagementPublisherName string
 param apiManagementPublisherEmail string
+@secure()
+param appServiceKey string
+@secure()
+param aoaiToken string
 
 @allowed([
   'rawxml'
@@ -37,6 +41,8 @@ module apim './apiManagement.bicep' = {
     location: location
     appInsightsId: appins.outputs.id
     appInsightsInstrumentationKey: appins.outputs.instrumentationKey
+    appServiceKey: appServiceKey
+    aoaiToken: aoaiToken
     apiManagementPublisherName: apiManagementPublisherName
     apiManagementPublisherEmail: apiManagementPublisherEmail
     apiManagementPolicyFormat: apiManagementPolicyFormat
