@@ -35,12 +35,8 @@ TBD
     ```
 
     ```bash
-    # On Linux
-    RANDOM_KEY=$(cat /proc/sys/kernel/random/uuid)
-    AZURE_ENV_NAME="hg$(echo $RANDOM)"
-
-    # On MacOS
-    RANDOM_KEY=$(cat /compat/linux/proc/sys/kernel/random/uuid)
+    # On Linux/MacOS
+    RANDOM_KEY=$(uuidgen)
     AZURE_ENV_NAME="hg$(echo $RANDOM)"
     ```
 
