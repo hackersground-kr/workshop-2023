@@ -1,5 +1,12 @@
-.App {
+/*Make text color white*/
+body{
+  background: black;
+  color: white;
+}
+
+.Main {
   text-align: center;
+  margin: 150px 20px;
 }
 
 .App-logo {
@@ -7,6 +14,13 @@
   pointer-events: none;
 }
 
+.logo {
+  height: 10vmin;
+  display: block;
+  margin: 0 auto;
+}
+
+/* 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -35,4 +49,4 @@
   to {
     transform: rotate(360deg);
   }
-}
+} */
