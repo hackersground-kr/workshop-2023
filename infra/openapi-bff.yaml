@@ -1,0 +1,269 @@
+openapi: 3.0.1
+
+info:
+  title: GitHub Issues Summary API
+  version: v1
+
+servers:
+  - url: https://localhost:5054/bff
+
+tags:
+  - name: Chat
+    description: Related to chat completion
+  - name: Issues
+    description: Related to GitHub issues
+  - name: Storage
+    description: Related to GitHub issues storage
+
+paths:
+  /chat/completions:
+    post:
+      tags:
+        - Chat
+      operationId: ChatCompletions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatCompletionRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatCompletionResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /issues:
+    get:
+      tags:
+        - Issues
+      operationId: Issues
+      parameters:
+        - name: user
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: repository
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitHubIssueCollectionResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /issues/{id}:
+    get:
+      tags:
+        - Issues
+      operationId: IssueById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: user
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: repository
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitHubIssueItemResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /storage:
+    post:
+      tags:
+        - Storage
+      operationId: Storage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StorageRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StorageResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    ChatCompletionRequest:
+      required:
+        - prompt
+      type: object
+      properties:
+        prompt:
+          minLength: 1
+          type: string
+    ChatCompletionResponse:
+      type: object
+      properties:
+        completion:
+          type: string
+          nullable: true
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          nullable: true
+    GitHubIssueCollectionResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GitHubIssueItemResponse'
+          nullable: true
+    GitHubIssueItemResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          nullable: true
+        number:
+          type: integer
+          format: int32
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        body:
+          type: string
+          nullable: true
+    StorageRequest:
+      required:
+        - id
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          nullable: false
+        issueId:
+          type: integer
+          format: int32
+          nullable: true
+        issueNumber:
+          type: integer
+          format: int32
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        body:
+          type: string
+          nullable: true
+        summary:
+          type: string
+          nullable: true
+    StorageResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          nullable: false
+        issueId:
+          type: integer
+          format: int32
+          nullable: true
+        issueNumber:
+          type: integer
+          format: int32
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        body:
+          type: string
+          nullable: true
+        summary:
+          type: string
+          nullable: true
+  securitySchemes:
+    github_token:
+      type: apiKey
+      description: Please enter valid GitHub Token
+      name: x-github-token
+      in: header
+    aoai_token:
+      type: apiKey
+      description: Please enter valid Azure OpenAI Token
+      name: x-aoai-token
+      in: header
+    api_key:
+      type: apiKey
+      description: Please enter valid API Key
+      name: x-webapi-key
+      in: header
+security:
+  - github_token: []
+  - aoai_token: []
+  - api_key: []

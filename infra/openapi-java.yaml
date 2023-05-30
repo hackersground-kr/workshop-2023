@@ -1,0 +1,79 @@
+openapi: 3.0.1
+
+info:
+  title: Chat Completion API
+  version: v1
+
+servers:
+  - url: https://localhost:5052
+
+tags:
+  - name: Chat
+    description: Related to chat completion
+
+paths:
+  /chat/completions:
+    post:
+      tags:
+        - Chat
+      operationId: ChatCompletions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatCompletionRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatCompletionResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    ChatCompletionRequest:
+      required:
+        - prompt
+      type: object
+      properties:
+        prompt:
+          minLength: 1
+          type: string
+    ChatCompletionResponse:
+      type: object
+      properties:
+        completion:
+          type: string
+          nullable: true
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          nullable: true
+  securitySchemes:
+    aoai_token:
+      type: apiKey
+      description: Please enter valid Azure OpenAI Token
+      name: x-aoai-token
+      in: header
+    api_key:
+      type: apiKey
+      description: Please enter valid API Key
+      name: x-webapi-key
+      in: header
+security:
+  - aoai_token: []
+  - api_key: []
