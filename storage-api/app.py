@@ -4,8 +4,7 @@ import connexion
 from info import StorageRequest, StorageResponse, ErrorResponse
 
 #Create the application with root as the swagger url
-app = connexion.FlaskApp(__name__, specification_dir='./', options={"swagger_url": "/"})
-
+app = connexion.FlaskApp(__name__, specification_dir='./', options={"swagger_url": "/swagger"})
 
 @app.route('/issues', methods=['POST'])
 def storage():
