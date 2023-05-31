@@ -18,7 +18,7 @@ function Content() {
 function LinkInput() {
     return (
         <form>
-            <input type="text" className="git-link rounded-full hover:ring-[#a6ff00] focus:ring-[#a6ff00]" placeholder='https://github.com/userID/repo.git' style={{width:'280px', padding:'7px 10px'}}></input>
+            <input type="text" className="git-link rounded-full hover:ring-[#a6ff00] focus:ring-[#a6ff00]" placeholder='https://github.com/userID/repo.git' style={{width:'280px', padding:'7px 10px', color:'black'}}></input>
         </form>
 
     )
