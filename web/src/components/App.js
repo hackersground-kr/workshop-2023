@@ -10,7 +10,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route exact path="/" component={Main} element={<Main />}/>
-          <Route exact path="/info" component={Info} />
+          <Route exact path="/info" component={Info} element={<Info />}/>
         </Routes>
       </BrowserRouter>
 
