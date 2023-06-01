@@ -1,0 +1,13 @@
+body{
+    background: black;
+    color: white;
+}
+
+.Info {
+    text-align: center;
+    margin: 100px 50px;
+}
+
+table {
+    margin: 30px 0;
+}
