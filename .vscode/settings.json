@@ -1,0 +1,6 @@
+{
+    "java.project.sourcePaths": [
+        "chat-api/src/main/java/com/workshop/chatapi"
+    ],
+    "java.configuration.updateBuildConfiguration": "interactive"
+}
