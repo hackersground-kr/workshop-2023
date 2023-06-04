@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Main.css';
 
 function Header() {
@@ -11,24 +13,72 @@ function Header() {
   
 function Content() {
     return (
-        <p className="content">Github Issue Summarizer.<br></br>이슈를 요약해서 보고 싶은 깃허브 레포 링크를 입력하세요.</p>
+        <p className="content">Github Issue Summarizer<br></br>깃허브 레포의 정보를 <span style={{color:'#a6ff00'}}>유저이름 / 레포이름</span> 형식으로 입력해주세요.<br></br>
+            <span>User name / Repo name</span>
+        </p>
     )
 }
 
-function LinkInput() {
+function Input({ gitClassName, placeholderText }) {
+    //Return input with className with "gitClassName, rounded-full hover:ring-[#a6ff00] focus:ring-[#a6ff00]"" and placehoder, style
+    return(
+        <input type="text" className={`${gitClassName} rounded-full ring-2 hover:ring-[#a6ff00] focus:outline-none focus:ring focus:ring-[#a6ff00]`} placeholder={placeholderText} style={{width:'180px', padding:'7px 10px', margin:'5px', color:'black'}}></input>
+    );
+}
+
+function InputForm() {
     return (
         <form>
-            <input type="text" className="git-link rounded-full hover:ring-[#a6ff00] focus:ring-[#a6ff00]" placeholder='https://github.com/userID/repo.git' style={{width:'280px', padding:'7px 10px', color:'black'}}></input>
+            <Input gitClassName="git-user" placeholderText="User name" />
+            <Input gitClassName="git-repo" placeholderText="Repo name" />
         </form>
 
     )
 }
 
+
 function Button() {
-    function handleOnClick() {
+    const navigate = useNavigate();
+    //add sample data to issues
+    const [issues, setIssues] = useState([]);
+
+    async function handleOnClick() {
         console.log("button clicked");
-        //Move to new path, Issue.js
-        window.location.href = "/info";
+        //Get form input value git-user, git-repo
+        const user = document.querySelector('.git-user').value;
+        const repo = document.querySelector('.git-repo').value;
+        
+        //Trigger getIssues() with user & repo input 
+        // const issues = getIssues(user, repo);
+        if (process.env.NODE_ENV === 'development') {
+            console.log(process.env.NODE_ENV);
+
+            const sampleData = [
+                { number: 1, title: "Issue 1 for testing" },
+                { number: 2, title: "Issue 2 for testing" },
+                { number: 3, title: "Issue 3 for testing" },
+                { number: 4, title: "Issue 4 for testing" }
+            ];
+            //Add sample data to issues
+            sampleData.forEach((data) => {
+                setIssues(issues.push(data));
+            });
+            
+        } else {
+            const response = await fetch(process.env.REACT_APP_BACKEND_API_ENDPOINT + '?user=' + user + '&repository=' + repo);
+        
+            if (!response.ok) {
+                throw new Error('Failed to fetch issues');
+            }
+        
+            const data = await response.json();
+            setIssues(data);
+        }
+
+        //Move to new path, Issue.js with const issues
+        navigate('/info', { state: { issues, user, repo } });
+        console.log('Navigating to /info with state:', { issues, user, repo }); // Check if navigation is called and state is correct
+
     }
 
     return (
@@ -41,11 +91,11 @@ function Button() {
 function Main() {
     return(
         <div className="Main">
-            <Header />
+            <Header />  
             <br></br>
             <Content />
             <div className='flex items-center justify-center gap-3' style={{margin:'10px'}}> 
-                <LinkInput />
+                <InputForm />
                 <Button />
             </div>
         </div>
