@@ -30,7 +30,7 @@ env:
 permissions:
   contents: read
   id-token: write
-  
+
 jobs:
   build_and_deploy_aswa:
     name: Build and Deploy to ASWA (Frontend)
@@ -43,7 +43,7 @@ jobs:
         shell: bash
         run: |
           npm install -g @azure/static-web-apps-cli
-      
+
       - name: Create artifacts
         shell: bash
         run: |
@@ -165,21 +165,25 @@ jobs:
         if: matrix.platform == 'dotnet'
         shell: bash
         run: |
-          dotnet restore src/DotNetApi && \
-          dotnet build src/DotNetApi -c Release && \
-          dotnet publish src/DotNetApi -c Release
+          dotnet restore issue-api && \
+          dotnet build issue-api -c Release && \
+          dotnet publish issue-api -c Release
 
       - name: Create artifacts for Java
         if: matrix.platform == 'java'
         shell: bash
         run: |
-          mvn -f src/JavaApi/pom.xml clean install
+          mvn -f chat-api/pom.xml clean install
 
-      - name: Create artifacts for Java
+      - name: Create artifacts for Python
         if: matrix.platform == 'python'
         shell: bash
         run: |
-          mvn -f src/JavaApi/pom.xml clean install
+          pushd storage-api
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install -r requirements.txt
+          popd
 
       - name: Login to Azure
         uses: Azure/login@v1
@@ -193,18 +197,18 @@ jobs:
         uses: Azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME_DOTNET }}
-          package: api/DotNetApi/bin/Release/published
+          package: issue-api/bin/Release/net7.0/publish
 
       - name: Deploy Java App to Azure
         if: matrix.platform == 'java'
         uses: Azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME_JAVA }}
-          package: src/JavaApi/target/*.jar
+          package: chat-api/target/*.jar
 
       - name: Deploy Python App to Azure
         if: matrix.platform == 'python'
         uses: Azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME_PYTHON }}
-          package: api/target/*.jar
+          package: storage-api
