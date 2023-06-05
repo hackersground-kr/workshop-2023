@@ -144,7 +144,6 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-          cache: true
 
       - name: Set up Java version
         if: matrix.platform == 'java'
