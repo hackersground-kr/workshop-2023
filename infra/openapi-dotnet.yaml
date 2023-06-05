@@ -1,16 +1,9 @@
 openapi: 3.0.1
-
 info:
   title: GitHub Issues API
   version: v1
-
 servers:
   - url: https://localhost:5051
-
-tags:
-  - name: Issues
-    description: Related to GitHub issues
-
 paths:
   /issues:
     get:
@@ -18,14 +11,16 @@ paths:
         - Issues
       operationId: Issues
       parameters:
-        - name: user
+        - name: User
           in: query
           required: true
+          style: form
           schema:
             type: string
-        - name: repository
+        - name: Repository
           in: query
           required: true
+          style: form
           schema:
             type: string
       responses:
@@ -56,17 +51,20 @@ paths:
         - name: id
           in: path
           required: true
+          style: simple
           schema:
             type: integer
             format: int32
-        - name: user
+        - name: User
           in: query
           required: true
+          style: form
           schema:
             type: string
-        - name: repository
+        - name: Repository
           in: query
           required: true
+          style: form
           schema:
             type: string
       responses:
@@ -96,6 +94,7 @@ components:
         message:
           type: string
           nullable: true
+      additionalProperties: false
     GitHubIssueCollectionResponse:
       type: object
       properties:
@@ -104,6 +103,7 @@ components:
           items:
             $ref: '#/components/schemas/GitHubIssueItemResponse'
           nullable: true
+      additionalProperties: false
     GitHubIssueItemResponse:
       type: object
       properties:
@@ -121,6 +121,7 @@ components:
         body:
           type: string
           nullable: true
+      additionalProperties: false
   securitySchemes:
     github_token:
       type: apiKey
