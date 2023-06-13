@@ -32,10 +32,38 @@ function IssueRow({issue, index}) {
     const number = issue.number;
     const title = issue.title;
 
+    //IF index is odd number, make the background color as bg-gray-800
+
+    const sampleData = {
+        "completion": "Sample data to be shown with bullet points. Still not sure how the data will come through and how I should render it."
+    };
+
+    async function handleIssueClick() {
+        if (process.env.NODE_ENV === 'development') {
+            //Do not call API in local dev env.
+            return sampleData.completion;
+        } else {
+            //Call /chat API endpoint
+            const response = await fetch("/chat");
+
+            //Call /storage API endpoint
+            saveSummarizedIssues();
+        }
+    }
+
+    async function saveSummarizedIssues() {
+        //Save summarized completion to the storage with github issue info.
+        
+        //Check response and handle it. 
+        //How will I let the user know that the issue has not been saved?
+
+        //I should return the success response code.
+    }
+
     return (
         <tr key={index}>
-            <td>{number}</td>
-            <td>{title}</td>
+            <td className="px-1.5 py-4 whitespace-nowrap text-center">{number}</td>
+            <td className='text-left px-3' onClick={handleIssueClick}>{title}</td>
         </tr>
     );
 
@@ -51,13 +79,13 @@ function IssueTable({issues}) {
     });
 
     return (
-        <div className="tableDiv py-2 align-left inline-block min-w-full shadow overflow-hidden sm:rounded-lg bg-gray-900">
+        <div className="tableDiv py-2 align-left inline-block min-w-full shadow overflow-hidden rounded-xl bg-gray-900">
 
             <table className="table-auto border-collapse w-full">
                 <thead className=''>
                     <tr>
-                        <th>#</th>
-                        <th>Issue Title</th>
+                        <th className="tracking-wider">#</th>
+                        <th className='text-left px-3'>Issue Title</th>
                     </tr>
                 </thead>
                 <tbody>
