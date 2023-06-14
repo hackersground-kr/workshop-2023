@@ -1,0 +1,3 @@
+#ignore db/config.py
+db/config.py
+db/.env
