@@ -1,52 +1,64 @@
-from fastapi import FastAPI, HTTPException
-from fastapi.routing import APIRoute
-from fastapi.openapi.utils import generate_operation_id
-from typing import Any, Callable, Set, TypeVar
-from info import StorageRequest, StorageResponse, ErrorResponse
+from fastapi import FastAPI, Depends, HTTPException
+from fastapi.openapi.utils import get_openapi
+from fastapi.security.api_key import APIKeyHeader
 
-app = FastAPI(
-    title="GitHub Issue Storage API",
-    version="v1"
-)
-F = TypeVar("F", bound=Callable[..., Any])
+from model.models import StorageRequest, StorageResponse, ErrorResponse
+from db.operate import insert_issue
 
+app = FastAPI(docs_url="/swagger")
+api_key_auth = APIKeyHeader(name="x-webapi-key", scheme_name="api_key" ,auto_error=False, description="Please enter valid API Key")
 
-def remove_422(func: F) -> F:
-    func.__remove_422__ = True
-    return func
+async def get_api_key(api_key: str = Depends(api_key_auth)):
+    #Compare api key with app config secret value.
+    if api_key == "secret":
+        return api_key
+    else:
+        #Return 401 error with ErrorResponse model
+        raise HTTPException(status_code=401, detail=ErrorResponse(message="Unauthorized"))
 
-
-def remove_422s(app: FastAPI) -> None:
-    openapi_schema = app.openapi()
-    operation_ids_to_update: Set[str] = set()
-    for route in app.routes:
-        if not isinstance(route, APIRoute):
-            continue
-        methods = route.methods or ["GET"]
-        if getattr(route.endpoint, "__remove_422__", None):
-            for method in methods:
-                operation_ids_to_update.add(generate_operation_id(route=route, method=method))
-    paths = openapi_schema["paths"]
-    for path, operations in paths.items():
-        for method, metadata in operations.items():
-            operation_id = metadata.get("operationId")
-            if operation_id in operation_ids_to_update:
-                metadata["responses"].pop("422", None)
-
-@app.post("/issues", tags=["Storage"], response_model=StorageResponse, responses={401: {"model": ErrorResponse}, 403: {"model": ErrorResponse}})
-@remove_422
+@app.post("/issues", tags=["Storage"], response_model=StorageResponse, responses={401: {"model": ErrorResponse}, 403: {"model": ErrorResponse}}, dependencies=[Depends(api_key_auth)])
 async def store_issue(storage_request: StorageRequest):
-    # Your storage logic here
-    
-    #if it is not authorized, raise 401 error with "Unathorized" message
-    if storage_request.user != "admin":
-        raise HTTPException(status_code=401, detail="Unauthorized")
+    get_api_key(api_key=api_key_auth)
     
     #if it is forbidden, raise 403 error with "Forbidden" message
-    elif storage_request.repository == "private":
+    if storage_request.repository == "private":
         raise HTTPException(status_code=403, detail="Forbidden")
+    
+    #Insert issue to the database
+    insert_issue(storage_request)
     
     return storage_request
 
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    openapi_schema = get_openapi(
+        title="GitHub Issue Storage API",
+        version="v1",
+        routes=app.routes,
+    )
+    
+    # Remove 422 error from the schema
+    def remove_422_error(schema):
+        if isinstance(schema, dict):
+            for key, value in list(schema.items()):
+                if key == "422":
+                    del schema[key]
+                else:
+                    remove_422_error(value)
+        elif isinstance(schema, list):
+            for item in schema:
+                remove_422_error(item)
 
-remove_422s(app)
+    remove_422_error(openapi_schema)
+    
+    if "ValidationError" in openapi_schema["components"]["schemas"]:
+        del openapi_schema["components"]["schemas"]["ValidationError"]
+        
+    if "HTTPValidationError" in openapi_schema["components"]["schemas"]:
+        del openapi_schema["components"]["schemas"]["HTTPValidationError"]
+
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+app.openapi = custom_openapi

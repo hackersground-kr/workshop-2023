@@ -1,14 +1,14 @@
 from pydantic import BaseModel
 
 class Info(BaseModel):
-    id: int
+    id: str
     user: str
     repository: str
-    issueId: int
-    issueNumber: int
-    title: str
-    body: str
-    summary: str
+    issueId: int | None = None
+    issueNumber: int | None = None
+    title: str | None = None
+    body: str | None = None
+    summary: str | None = None
 
 class StorageRequest(Info):
     pass
