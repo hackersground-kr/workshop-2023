@@ -7,6 +7,12 @@ from model.models import Info
 load_dotenv()
 
 conn = pyodbc.connect(os.environ['SQLAZURECONNSTR_STORAGE'])
+TABLE_NAME = "issues"
+
+def delete_table():
+    cursor = conn.cursor()
+    cursor.execute(f"DROP TABLE {TABLE_NAME}")
+    conn.commit()
 
 def create_table():
     #create table with format from ../model/models.py Info class.
@@ -14,7 +20,8 @@ def create_table():
     
     cursor.execute("""
         CREATE TABLE issues (
-            id VARCHAR(255) PRIMARY KEY NOT NULL,
+            [index] INT IDENTITY(1,1) PRIMARY KEY,
+            id VARCHAR(255) NOT NULL,
             [user] VARCHAR(255) NOT NULL,
             repository VARCHAR(255) NOT NULL,
             issueId INT,
@@ -30,9 +37,8 @@ def create_table():
 def insert_issue(issue: Info):
     #insert issue to table
     cursor = conn.cursor()
-    
-    table_name = "issues"
-    cursor.execute(f"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '{table_name}'")
+
+    cursor.execute(f"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '{TABLE_NAME}'")
     fetch_table = cursor.fetchone()
     
     #Create table if it doesn't exist
