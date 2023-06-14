@@ -1,23 +1,20 @@
-class Info:
-    def __init__(self, id, user, repository, issueId, issueNumber, title, body, summary):
-        self.id = id
-        self.user = user
-        self.repository = repository
-        self.issueId = issueId
-        self.issueNumber = issueNumber
-        self.title = title
-        self.body = body
-        self.summary = summary
+from pydantic import BaseModel
 
-#Info 상속한 StorageRequest class
+class Info(BaseModel):
+    id: int
+    user: str
+    repository: str
+    issueId: int
+    issueNumber: int
+    title: str
+    body: str
+    summary: str
+
 class StorageRequest(Info):
-    def __init__(self, id, user, repository, issueId, issueNumber, title, body, summary):
-        super().__init__(id, user, repository, issueId, issueNumber, title, body, summary)
+    pass
 
 class StorageResponse(Info):
-    def __init__(self, id, user, repository, issueId, issueNumber, title, body, summary):
-        super().__init__(id, user, repository, issueId, issueNumber, title, body, summary)
+    pass
 
-class ErrorResponse:
-    def __init__(self, message):
-        self.message = message
+class ErrorResponse(BaseModel):
+    message: str
