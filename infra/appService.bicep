@@ -10,13 +10,27 @@ param appInsightsInstrumentationKey string
 @secure()
 param appInsightsConnectionString string
 
-param useSql bool = false
 @secure()
-param adminUsername string
-@secure()
-param adminPassword string
+param appServiceKey string
 
-param useAoai bool = false
+param isDotNet bool = false
+param isJava bool = false
+param isPython bool = false
+param openApiDocTitle string
+param openApiDocVersion string
+param openApiDocServer string
+param openApiIncludeOnDeployment bool = false
+param githubAgent string
+@secure()
+param githubClientId string
+@secure()
+param githubClientSecret string
+
+@secure()
+param sqlAdminUsername string
+@secure()
+param sqlAdminPassword string
+
 param aoaiApiEndpoint string
 param aoaiApiVersion string = '2022-12-01'
 param aoaiApiDeploymentId string
@@ -30,10 +44,26 @@ var appInsights = {
   connectionString: appInsightsConnectionString
 }
 
+var openApi = {
+  title: openApiDocTitle
+  version: openApiDocVersion
+  server: openApiDocServer
+  includeOnDeployment: openApiIncludeOnDeployment
+}
+var github = {
+  agent: githubAgent
+  clientId: githubClientId
+  clientSecret: githubClientSecret
+}
+
 var aoai = {
   endpoint: aoaiApiEndpoint
   apiVersion: aoaiApiVersion
   deploymentId: aoaiApiDeploymentId
+}
+
+var sql = {
+  connectionString: 'Driver={ODBC Driver 18 for SQL Server};Server=tcp:sqlsvr-${name}${environment().suffixes.sqlServerHostname},1433;Database=sqldb-${name};Uid=${sqlAdminUsername};Pwd=${sqlAdminPassword};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;'
 }
 
 var commonAppSettings = [
@@ -46,8 +76,44 @@ var commonAppSettings = [
     name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
     value: appInsights.connectionString
   }
+  // Auth - API Key
+  {
+    name: 'Auth__ApiKey'
+    value: appServiceKey
+  }
 ]
-var appSettings = concat(concat(commonAppSettings, useAoai ? [
+var appSettings = concat(concat(concat(commonAppSettings, isDotNet ? [
+  // OpenAPI
+  {
+    name: 'OpenApi__Title'
+    value: openApi.title
+  }
+  {
+    name: 'OpenApi__Version'
+    value: openApi.version
+  }
+  {
+    name: 'OpenApi__Server'
+    value: openApi.server
+  }
+  {
+    name: 'OpenApi__IncludeOnDeployment'
+    value: openApi.includeOnDeployment
+  }
+  // GitHub
+  {
+    name: 'GitHub__Agent'
+    value: github.agent
+  }
+  {
+    name: 'GitHub__ClientId'
+    value: github.clientId
+  }
+  {
+    name: 'GitHub__ClientSecret'
+    value: github.clientSecret
+  }
+] : []), isJava ? [
   // Azure OpenAI Service
   {
     name: 'AOAI_API_ENDPOINT'
@@ -61,11 +127,11 @@ var appSettings = concat(concat(commonAppSettings, useAoai ? [
     name: 'AOAI_API_DEPLOYMENT_ID'
     value: aoai.deploymentId
   }
-] : []), useSql ? [
+] : []), isPython ? [
   // Azure SQL Database
   {
-    name: 'ConnectionString__Databases__AzureSQL'
-    value: 'Driver={ODBC Driver 18 for SQL Server};Server=tcp:sqlsvr-${name}${environment().suffixes.sqlServerHostname},1433;Database=sqldb-${name};Uid=${adminUsername};Pwd=${adminPassword};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;'
+    name: 'CONNECTIONSTRING_AZURESQL'
+    value: sql.connectionString
   }
 ]: [])
 
@@ -90,30 +156,6 @@ resource appsvc 'Microsoft.Web/sites@2022-03-01' = {
       linuxFxVersion: apiApp.siteConfig.linuxFxVersion
       alwaysOn: true
       appSettings: apiApp.siteConfig.appSettings
-      // appSettings: [
-      //   // Common Settings
-      //   {
-      //     name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-      //     value: appInsights.instrumentationKey
-      //   }
-      //   {
-      //     name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-      //     value: appInsights.connectionString
-      //   }
-      //   // Azure OpenAI Service
-      //   {
-      //     name: 'AOAI_API_ENDPOINT'
-      //     value: aoai.endpoint
-      //   }
-      //   {
-      //     name: 'AOAI_API_VERSION'
-      //     value: aoai.apiVersion
-      //   }
-      //   {
-      //     name: 'AOAI_API_DEPLOYMENT_ID'
-      //     value: aoai.deploymentId
-      //   }
-      // ]
     }
   }
 }

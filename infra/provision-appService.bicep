@@ -1,9 +1,23 @@
 param name string
 param location string = resourceGroup().location
 
+@secure()
+param appServiceKey string
 param linuxFxVersion string = 'DOTNETCORE|7.0'
-
-param useSql bool = false
+param isDotNet bool = false
+param isJava bool = false
+param isPython bool = false
+param openapi object = {
+  title: ''
+  version: ''
+  server: ''
+  includeOnDeployment: false
+}
+param github object = {
+  agent: ''
+  clientId: ''
+  clientSecret: ''
+}
 param sqlService object = {
   location: ''
   admin: {
@@ -11,12 +25,13 @@ param sqlService object = {
     password: ''
   }
 }
-param useAoai bool = false
-param aoaiApiEndpoint string
-param aoaiApiVersion string = '2022-12-01'
-param aoaiApiDeploymentId string
+param aoaiService object = {
+  apiEndpoint: ''
+  apiVersion: ''
+  deploymentId: ''
+}
 
-module sqlsvc './azureSql.bicep' = if (useSql == true) {
+module sqlsvc './azureSql.bicep' = if (isPython == true) {
   name: 'SqlServer_AppService_${name}'
   params: {
     name: '${name}'
@@ -60,13 +75,22 @@ module appsvc './appService.bicep' = {
     appInsightsInstrumentationKey: appins.outputs.instrumentationKey
     appInsightsConnectionString: appins.outputs.connectionString
     appServicePlanId: asplan.outputs.id
-    useSql: useSql
-    adminUsername: sqlService.admin.username
-    adminPassword: sqlService.admin.password
-    useAoai: useAoai
-    aoaiApiEndpoint: aoaiApiEndpoint
-    aoaiApiVersion: aoaiApiVersion
-    aoaiApiDeploymentId: aoaiApiDeploymentId
+    isDotNet: isDotNet
+    isJava: isJava
+    isPython: isPython
+    appServiceKey: appServiceKey
+    openApiDocTitle: openapi.title
+    openApiDocVersion: openapi.version
+    openApiDocServer: openapi.server
+    openApiIncludeOnDeployment: openapi.includeOnDeployment
+    githubAgent: github.agent
+    githubClientId: github.clientId
+    githubClientSecret: github.clientSecret
+    sqlAdminUsername: isPython ? sqlService.admin.username : ''
+    sqlAdminPassword: isPython ? sqlService.admin.password : ''
+    aoaiApiEndpoint: isJava ? aoaiService.apiEndpoint : ''
+    aoaiApiVersion: isJava ? aoaiService.apiVersion : ''
+    aoaiApiDeploymentId: isJava ? aoaiService.deploymentId : ''
   }
 }
 

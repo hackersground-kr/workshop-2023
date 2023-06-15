@@ -34,10 +34,23 @@ var apps = [
     siteConfig: {
       linuxFxVersion: 'DOTNETCORE|7.0'
     }
-    useSql: false
-    sql: {}
-    useAoai: false
+    isDotNet: true
+    isJava: false
+    isPython: false
+    apiKey: appServiceKey
+    openapi: {
+      title: 'GitHub Issues API'
+      version: 'v1'
+      server: 'https://appsvc-${name}-dotnet-api.azurewebsites.net'
+      includeOnDeployment: true
+    }
+    github: {
+      agent: 'GitHub Issues Bot'
+      clientId: 'to_be_replaced'
+      clientSecret: 'to_be_replaced'
+    }
     aoai: {}
+    sql: {}
     apimApi: {
       name: 'GitHubIssues'
       displayName: 'GitHubIssues'
@@ -63,14 +76,18 @@ var apps = [
     siteConfig: {
       linuxFxVersion: 'JAVA|17-java17'
     }
-    useSql: false
-    sql: {}
-    useAoai: true
+    isDotNet: false
+    isJava: true
+    isPython: false
+    apiKey: appServiceKey
+    openapi: {}
+    github: {}
     aoai: {
       apiEndpoint: 'to_be_replaced' //cogsvc.outputs.aoaiApiEndpoint
       apiVersion: 'to_be_replaced' //cogsvc.outputs.aoaiApiVersion
       apiDeploymentId: 'to_be_replaced' //cogsvc.outputs.aoaiApiDeploymentId
     }
+    sql: {}
     apimApi: {
       name: 'ChatCompletions'
       displayName: 'ChatCompletions'
@@ -96,7 +113,13 @@ var apps = [
     siteConfig: {
       linuxFxVersion: 'PYTHON|3.11'
     }
-    useSql: true
+    isDotNet: false
+    isJava: false
+    isPython: true
+    apiKey: appServiceKey
+    openapi: {}
+    github: {}
+    aoai: {}
     sql: {
       location: location
       admin: {
@@ -104,8 +127,6 @@ var apps = [
         password: sqlServerAdminPassword
       }
     }
-    useAoai: false
-    aoai: {}
     apimApi: {
       name: 'GitHubIssueStorage'
       displayName: 'GitHubIssueStorage'
@@ -129,9 +150,13 @@ var apps = [
     useApp: false
     suffix: 'bff'
     siteConfig: {}
-    useSql: false
+    isDotNet: false
+    isJava: false
+    isPython: false
+    apiKey: ''
+    openapi: {}
+    github: {}
     sql: {}
-    useAoai: false
     aoai: {}
     apimApi: {
       name: 'GitHubIssuesSummary'
@@ -189,12 +214,14 @@ module appsvc './provision-appService.bicep' = [for (app, i) in apps: if (app.us
     name: '${name}-${app.suffix}'
     location: location
     linuxFxVersion: app.siteConfig.linuxFxVersion
-    useSql: app.useSql
+    isDotNet: app.isDotNet
+    isJava: app.isJava
+    isPython: app.isPython
+    appServiceKey: app.apiKey
+    openapi: app.openapi
+    github: app.github
     sqlService: app.sql
-    useAoai: app.useAoai
-    aoaiApiEndpoint: app.useAoai ? app.aoai.apiEndpoint : ''
-    aoaiApiVersion: app.useAoai ? app.aoai.apiVersion : ''
-    aoaiApiDeploymentId: app.useAoai ? app.aoai.apiDeploymentId : ''
+    aoaiService: app.aoai
   }
 }]
 
