@@ -4,6 +4,10 @@ param name string
 param location string = 'Korea Central'
 @secure()
 param appServiceKey string
+@secure()
+param sqlServerAdminUsername string
+@secure()
+param sqlServerAdminPassword string
 
 param apiManagementPublisherName string = 'GitHub Issues Summary'
 param apiManagementPublisherEmail string = 'apim@hackersground.kr'
@@ -30,6 +34,8 @@ var apps = [
     siteConfig: {
       linuxFxVersion: 'DOTNETCORE|7.0'
     }
+    useSql: false
+    sql: {}
     useAoai: false
     aoai: {}
     apimApi: {
@@ -57,6 +63,8 @@ var apps = [
     siteConfig: {
       linuxFxVersion: 'JAVA|17-java17'
     }
+    useSql: false
+    sql: {}
     useAoai: true
     aoai: {
       apiEndpoint: 'to_be_replaced' //cogsvc.outputs.aoaiApiEndpoint
@@ -88,6 +96,14 @@ var apps = [
     siteConfig: {
       linuxFxVersion: 'PYTHON|3.11'
     }
+    useSql: true
+    sql: {
+      location: location
+      admin: {
+        username: sqlServerAdminUsername
+        password: sqlServerAdminPassword
+      }
+    }
     useAoai: false
     aoai: {}
     apimApi: {
@@ -113,6 +129,8 @@ var apps = [
     useApp: false
     suffix: 'bff'
     siteConfig: {}
+    useSql: false
+    sql: {}
     useAoai: false
     aoai: {}
     apimApi: {
@@ -142,7 +160,7 @@ var apps = [
           policy: {
               format: 'xml-link'
               value: 'https://raw.githubusercontent.com/hackersground-kr/workshop/main/infra/apim-policy-api-bff-op-issues.xml'
-          }  
+          }
         }
         {
           name: 'IssueById'
@@ -171,13 +189,15 @@ module appsvc './provision-appService.bicep' = [for (app, i) in apps: if (app.us
     name: '${name}-${app.suffix}'
     location: location
     linuxFxVersion: app.siteConfig.linuxFxVersion
+    useSql: app.useSql
+    sqlService: app.sql
     useAoai: app.useAoai
     aoaiApiEndpoint: app.useAoai ? app.aoai.apiEndpoint : ''
     aoaiApiVersion: app.useAoai ? app.aoai.apiVersion : ''
     aoaiApiDeploymentId: app.useAoai ? app.aoai.apiDeploymentId : ''
   }
 }]
-    
+
 module apim './provision-apiManagement.bicep' = {
   name: 'ApiManagement'
   scope: rg

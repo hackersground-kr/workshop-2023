@@ -10,6 +10,12 @@ param appInsightsInstrumentationKey string
 @secure()
 param appInsightsConnectionString string
 
+param useSql bool = false
+@secure()
+param adminUsername string
+@secure()
+param adminPassword string
+
 param useAoai bool = false
 param aoaiApiEndpoint string
 param aoaiApiVersion string = '2022-12-01'
@@ -18,7 +24,7 @@ param aoaiApiDeploymentId string
 var asplan = {
   id: appServicePlanId
 }
-  
+
 var appInsights = {
   instrumentationKey: appInsightsInstrumentationKey
   connectionString: appInsightsConnectionString
@@ -41,7 +47,7 @@ var commonAppSettings = [
     value: appInsights.connectionString
   }
 ]
-var appSettings = concat(commonAppSettings, useAoai ? [
+var appSettings = concat(concat(commonAppSettings, useAoai ? [
   // Azure OpenAI Service
   {
     name: 'AOAI_API_ENDPOINT'
@@ -55,7 +61,13 @@ var appSettings = concat(commonAppSettings, useAoai ? [
     name: 'AOAI_API_DEPLOYMENT_ID'
     value: aoai.deploymentId
   }
-] : [])
+] : []), useSql ? [
+  // Azure SQL Database
+  {
+    name: 'ConnectionString__Databases__AzureSQL'
+    value: 'Driver={ODBC Driver 18 for SQL Server};Server=tcp:sqlsvr-${name}${environment().suffixes.sqlServerHostname},1433;Database=sqldb-${name};Uid=${adminUsername};Pwd=${adminPassword};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;'
+  }
+]: [])
 
 var apiApp = {
   name: 'appsvc-${name}'
