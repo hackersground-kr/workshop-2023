@@ -57,7 +57,14 @@ function Button() {
                 { number: 1, title: "Issue 1 for testing" },
                 { number: 2, title: "Issue 2 for testing" },
                 { number: 3, title: "Issue 3 for testing" },
-                { number: 4, title: "Issue 4 for testing" }
+                { number: 4, title: "Issue 4 for testing" },
+                { number: 5, title: "Issue 5 for testing" },
+                { number: 6, title: "Issue 6 for testing" },
+                { number: 7, title: "Issue 7 for testing" },
+                { number: 8, title: "Issue 8 for testing" },
+                { number: 9, title: "Issue 9 for testing" },
+                { number: 10, title: "Issue 10 for testing" },
+                { number: 11, title: "Issue 11 for testing" },
             ];
             //Add sample data to issues
             sampleData.forEach((data) => {
