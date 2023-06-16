@@ -80,6 +80,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags:
+        - Storage
+      operationId: Storage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StorageRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StorageResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /issues/{id}:
     get:
       tags:
@@ -109,35 +138,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GitHubIssueItemResponse'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-  /storage:
-    post:
-      tags:
-        - Storage
-      operationId: Storage
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/StorageRequest'
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StorageResponse'
         '401':
           description: Unauthorized
           content:
@@ -200,12 +200,20 @@ components:
     StorageRequest:
       required:
         - id
+        - user
+        - repository
       type: object
       properties:
         id:
           type: string
           format: uuid
-          nullable: false
+          nullable: true
+        user:
+          type: string
+          nullable: true
+        repository:
+          type: string
+          nullable: true
         issueId:
           type: integer
           format: int32
@@ -229,7 +237,13 @@ components:
         id:
           type: string
           format: uuid
-          nullable: false
+          nullable: true
+        user:
+          type: string
+          nullable: true
+        repository:
+          type: string
+          nullable: true
         issueId:
           type: integer
           format: int32

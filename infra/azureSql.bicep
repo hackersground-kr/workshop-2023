@@ -57,6 +57,13 @@ resource sqldb 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
 resource sqlsvrFirewall 'Microsoft.Sql/servers/firewallRules@2022-05-01-preview' = {
   name: 'AllowAllWindowsAzureIps'
   parent: sqlsvr
+  dependsOn: [
+    sqldb
+  ]
+  properties: {
+    startIpAddress: '0.0.0.0'
+    endIpAddress: '0.0.0.0'
+  }
 }
 
 output id string = sqlsvr.id

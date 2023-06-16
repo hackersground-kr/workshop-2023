@@ -36,8 +36,8 @@ module sqlsvc './azureSql.bicep' = if (isPython == true) {
   params: {
     name: '${name}'
     location: sqlService.location
-    adminUsername: sqlService.admin
-    adminPassword: sqlService.password
+    adminUsername: sqlService.admin.username
+    adminPassword: sqlService.admin.password
   }
 }
 
@@ -68,6 +68,12 @@ module asplan './appServicePlan.bicep' = {
 
 module appsvc './appService.bicep' = {
   name: 'AppService_AppService_${name}'
+  dependsOn: isPython ? [
+    sqlsvc
+    asplan
+  ] : [
+    asplan
+  ]
   params: {
     name: '${name}-api'
     location: location
@@ -79,13 +85,13 @@ module appsvc './appService.bicep' = {
     isJava: isJava
     isPython: isPython
     appServiceKey: appServiceKey
-    openApiDocTitle: openapi.title
-    openApiDocVersion: openapi.version
-    openApiDocServer: openapi.server
-    openApiIncludeOnDeployment: openapi.includeOnDeployment
-    githubAgent: github.agent
-    githubClientId: github.clientId
-    githubClientSecret: github.clientSecret
+    openApiDocTitle: isDotNet ? openapi.title : ''
+    openApiDocVersion: isDotNet ? openapi.version : ''
+    openApiDocServer: isDotNet ? openapi.server : ''
+    openApiIncludeOnDeployment: isDotNet ? openapi.includeOnDeployment : false
+    githubAgent: isDotNet ? github.agent : ''
+    githubClientId: isDotNet ? github.clientId : ''
+    githubClientSecret: isDotNet ? github.clientSecret : ''
     sqlAdminUsername: isPython ? sqlService.admin.username : ''
     sqlAdminPassword: isPython ? sqlService.admin.password : ''
     aoaiApiEndpoint: isJava ? aoaiService.apiEndpoint : ''
