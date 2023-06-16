@@ -32,18 +32,24 @@ TBD
     # On Windows
     $RANDOM_KEY = $(New-Guid).Guid
     $AZURE_ENV_NAME = "hg$(Get-Random -Max 9999)"
+    $AZURE_SQLADMIN_USERNAME = "{{ SQL Server 관리자 계정 이름 }}"
+    $AZURE_SQLADMIN_PASSWORD = "{{ SQL Server 관리자 계정 암호 }}"
     ```
 
     ```bash
     # On Linux/MacOS
     RANDOM_KEY=$(uuidgen)
     AZURE_ENV_NAME="hg$(echo $RANDOM)"
+    AZURE_SQLADMIN_USERNAME="{{ SQL Server 관리자 계정 이름 }}"
+    AZURE_SQLADMIN_PASSWORD="{{ SQL Server 관리자 계정 암호 }}"
     ```
 
     ```bash
     azd auth login
     azd init -e $AZURE_ENV_NAME
     azd env set AZURE_APPSERVICE_KEY $RANDOM_KEY
+    azd env set AZURE_SQLADMIN_USERNAME $AZURE_SQLADMIN_USERNAME
+    azd env set AZURE_SQLADMIN_PASSWORD $AZURE_SQLADMIN_PASSWORD
     azd up
     ```
 
