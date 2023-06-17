@@ -73,6 +73,7 @@ def custom_openapi():
         title="GitHub Issue Storage API",
         version="v1",
         routes=app.routes,
+        servers=[{"url": "https://localhost:5053"}]
     )
 
     # Remove 422 error from the schema
