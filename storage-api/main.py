@@ -27,7 +27,7 @@ async def custom_exception_handler(request, exc):
 
 def is_valid_key(api_key: str = Depends(api_key_auth)):
     # Compare api key with app config secret value.
-    if api_key == os.environ['API_KEY']:
+    if api_key == os.environ['Auth__ApiKey']:
         return True
     else:
         return False

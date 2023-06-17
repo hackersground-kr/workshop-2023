@@ -71,7 +71,7 @@ function IssueRow({issue, index, user, repo}) {
     async function saveSummarizedIssues() {
 
         //Save summarized completion to the storage with github issue info.
-        const response = await fetch(process.env.REACT_APP_STORAGE_ENDPOINT, {
+        const response = await fetch(process.env.REACT_APP_ISSUE_ENDPOINT, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
