@@ -4,7 +4,7 @@
 
 ## 시스템 아키텍처
 
-TBD
+![전체 시스템 아키텍처](./images/architecture.png)
 
 ## 사전 준비사항
 
@@ -17,11 +17,11 @@ TBD
 
 ## 시작하기 &ndash; 애저 포털 이용하기
 
-➡️ [애저 포털 이용하기](./docs/session01.md)
+➡️ [애저 포털 이용하기](./docs/session-01/README.md)
 
 ## 시작하기 &ndash; GitHub 코드스페이스 & 코파일럿 이용하기
 
-➡️ [GitHub 코드스페이스 & 코파일럿 이용하기](./docs/session01.md)
+➡️ [GitHub 코드스페이스 & 코파일럿 이용하기](./docs/session-02/README.md)
 
 ## 시작하기 &ndash; 한 번에 둘러보기
 
