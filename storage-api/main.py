@@ -8,7 +8,7 @@ import os
 from model.models import StorageRequest, StorageResponse, ErrorResponse
 from db.operate import insert_issue, delete_table
 
-app = FastAPI(docs_url="/swagger")
+app = FastAPI(docs_url="/")
 api_key_auth = APIKeyHeader(name="x-webapi-key", scheme_name="api_key" ,auto_error=False, description="Please enter valid API Key")
 
 # Uncomment this if you need to initialize the table
@@ -73,7 +73,6 @@ def custom_openapi():
         title="GitHub Issue Storage API",
         version="v1",
         routes=app.routes,
-        servers=[{"url": "https://localhost:5053"}]
     )
 
     # Remove 422 error from the schema
