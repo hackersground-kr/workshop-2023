@@ -34,7 +34,7 @@ param aoaiService object = {
 module sqlsvc './azureSql.bicep' = if (isPython == true) {
   name: 'SqlServer_AppService_${name}'
   params: {
-    name: '${name}'
+    name: '${name}-api'
     location: sqlService.location
     adminUsername: sqlService.admin.username
     adminPassword: sqlService.admin.password
