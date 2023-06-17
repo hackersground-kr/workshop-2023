@@ -41,6 +41,7 @@ function Button() {
     const navigate = useNavigate();
     //add sample data to issues
     const [issues, setIssues] = useState([]);
+    const [error, setError] = useState(null);
 
     async function handleOnClick() {
         console.log("button clicked");
@@ -54,17 +55,16 @@ function Button() {
             console.log(process.env.NODE_ENV);
 
             const sampleData = [
-                { number: 1, title: "Issue 1 for testing" },
-                { number: 2, title: "Issue 2 for testing" },
-                { number: 3, title: "Issue 3 for testing" },
-                { number: 4, title: "Issue 4 for testing" },
-                { number: 5, title: "Issue 5 for testing" },
-                { number: 6, title: "Issue 6 for testing" },
-                { number: 7, title: "Issue 7 for testing" },
-                { number: 8, title: "Issue 8 for testing" },
-                { number: 9, title: "Issue 9 for testing" },
-                { number: 10, title: "Issue 10 for testing" },
-                { number: 11, title: "Issue 11 for testing" },
+                { id: 1, number: 1, title: "Issue 1 for testing" , body: "Issue 1 body for testing"},
+                { id: 2, number: 2, title: "Issue 2 for testing" , body: "Issue 2 body for testing"},
+                { id: 3, number: 3, title: "Issue 3 for testing" , body: "Issue 3 body for testing"},
+                { id: 4, number: 4, title: "Issue 4 for testing" , body: "Issue 4 body for testing"},
+                { id: 5, number: 5, title: "Issue 5 for testing" , body: "Issue 5 body for testing"},
+                { id: 6, number: 6, title: "Issue 6 for testing" , body: "Issue 6 body for testing"},
+                { id: 7, number: 7, title: "Issue 7 for testing" , body: "Issue 7 body for testing"},
+                { id: 8, number: 8, title: "Issue 8 for testing" , body: "Issue 8 body for testing"},
+                { id: 9, number: 9, title: "Issue 9 for testing" , body: "Issue 9 body for testing"},
+                { id: 10, number: 10, title: "Issue 10 for testing" , body: "Issue 10 body for testing"},
             ];
             //Add sample data to issues
             sampleData.forEach((data) => {
@@ -72,20 +72,28 @@ function Button() {
             });
             
         } else {
-            const response = await fetch(process.env.REACT_APP_BACKEND_API_ENDPOINT + '?user=' + user + '&repository=' + repo);
+            const response = await fetch(process.env.REACT_APP_ISSUE_ENDPOINT + '?user=' + user + '&repository=' + repo);
         
-            if (!response.ok) {
-                throw new Error('Failed to fetch issues');
+            if (response.ok) {
+                const data = await response.json();
+                setIssues(data.items);
+            } else if (response.status === 401) {
+                setError('Unauthorized. Please log in to access GitHub issues.');
+            } else if (response.status === 403) {
+                setError('Forbidden. You do not have permission to access GitHub issues.');
+            } else {
+                setError('Error occurred while fetching GitHub issues.');
             }
-        
-            const data = await response.json();
-            setIssues(data);
         }
 
-        //Move to new path, Issue.js with const issues
-        navigate('/info', { state: { issues, user, repo } });
-        console.log('Navigating to /info with state:', { issues, user, repo }); // Check if navigation is called and state is correct
-
+        //If there is error, alert error & do not navigate to /info
+        if (error) {
+            alert(error);
+        } else {
+            //Move to new path, /info with const issues
+            navigate('/info', { state: { issues, user, repo } });
+            console.log('Navigating to /info with state:', { issues, user, repo }); // Check if navigation is called and state is correct
+        }
     }
 
     return (

@@ -16,3 +16,18 @@ table {
 .tableDiv {
     margin: 30px 0;
 }
+
+.text-left {
+    position: relative;
+}
+
+/* .expanded {
+    position: relative;
+}
+
+.expanded .expanded-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+} */
