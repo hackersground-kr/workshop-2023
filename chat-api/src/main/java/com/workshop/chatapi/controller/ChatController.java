@@ -43,6 +43,9 @@ public class ChatController {
     @Value("${CHATGPT_API_DEPLOYMENT_ID}")
     private String chatGPTApiDeploymentId;
 
+    @Value("${CHATGPT_API_KEY}")
+    private String chatGPTApiKey;
+
     @Value("${Auth__ApiKey}")
     private String apiKey;
 
@@ -72,20 +75,25 @@ public class ChatController {
         @Parameter(hidden=true) @RequestHeader(value="x-webapi-key", required=false) String apiKey,
         @RequestBody ChatCompletionRequest request) {
 
-        //Print the request header & body
-        System.out.println("aoai_token: " + aoaiToken);
-        System.out.println("api_key: " + apiKey);
-        System.out.println("request: " + request.getPrompt());
-
+        // Check if aoai_token is empty
         if (aoaiToken == null || aoaiToken.isEmpty()) {
             ErrorResponse errorResponse = new ErrorResponse("Missing or empty aoai_token");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         } 
+
+        // Check if api_key is empty
         if (apiKey == null || apiKey.isEmpty()) {
             ErrorResponse errorResponse = new ErrorResponse("Missing or empty api_key");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
 
+        // Check if aoai_token is valid
+        if (!aoaiToken.equals(this.chatGPTApiKey)) {
+            ErrorResponse errorResponse = new ErrorResponse("Invalid aoai_token");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+        }
+
+        // Check if api_key is valid
         if (!apiKey.equals(this.apiKey)) {
             ErrorResponse errorResponse = new ErrorResponse("Invalid api_key");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
@@ -94,34 +102,21 @@ public class ChatController {
 
         // Get issue body from the frontend
         String issueBody = request.getPrompt();
-
         // Set prompt message for chatGPT to generate the completion
         String prompt = "이슈 내용:" + issueBody;
 
         // Create ChatGPT request
         ChatRequest chatRequest = new ChatRequest(chatGPTApiDeploymentId, prompt);
-
-        ChatResponse chatResponse = null;
         // Call ChatGPT API
-        try {
-            chatResponse = this.restTemplate.postForObject(chatGPTApiEndpoint, chatRequest, ChatResponse.class, new Object[] {});
-        } catch (Exception e) {
-            //Print exception
-            System.out.println("Exception: " + e.getMessage());
-        }
+        ChatResponse chatResponse = this.restTemplate.postForObject(chatGPTApiEndpoint, chatRequest, ChatResponse.class);
 
-        //Print chat response
-        System.out.println("chatResponse: " + chatResponse);
-
+        // Handle ChatGPT API response
         if (chatResponse == null || chatResponse.getChoices() == null || chatResponse.getChoices().isEmpty()) {
             return ResponseEntity.ok(new ChatCompletionResponse("ChatGPT API response is empty"));
         }
 
         // Get the response content only
         String responseContent = chatResponse.getChoices().get(0).getMessage().getContent();
-
-        //Print the response content
-        System.out.println("responseContent: " + responseContent);
 
         // Create the response object
         ChatCompletionResponse response = new ChatCompletionResponse(responseContent);

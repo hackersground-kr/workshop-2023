@@ -20,8 +20,6 @@ public class OpenAIRestTemplateConfig {
     @Qualifier("openaiRestTemplate")
     public RestTemplate openaiRestTemplate() {
         RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
-        //Print openapikey
-        System.out.println("openaiApiKey: " + openaiApiKey);
 
         restTemplate.getInterceptors().add((ClientHttpRequestInterceptor) (request, body, execution) -> {
             request.getHeaders().set(HttpHeaders.AUTHORIZATION, "Bearer " + openaiApiKey);
