@@ -1,25 +1,40 @@
 package com.workshop.chatapi.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import com.workshop.chatapi.model.ChatCompletionRequest;
 import com.workshop.chatapi.model.ChatCompletionResponse;
+import com.workshop.chatapi.model.ChatRequest;
+import com.workshop.chatapi.model.ChatResponse;
 import com.workshop.chatapi.model.ErrorResponse;
 
 
 @Tag(name = "Chat", description = "Related to chat completion")
 @RestController
-@RequestMapping("/chat")
+// @RequestMapping("/")
+@SecurityRequirement(name="aoai_token")
+@SecurityRequirement(name="api_key")
 public class ChatController {
+
+    @Value("${CHATGPT_API_ENDPOINT}")
+    private String chatGPTApiEndpoint;
+
+    @Value("${CHATGPT_API_DEPLOYMENT_ID}")
+    private String chatGPTApiDeploymentId;
+
+    @Value("${Auth__ApiKey}")
+    private String apiKey;
 
     @ApiResponses(
         value = {
@@ -40,16 +55,42 @@ public class ChatController {
             )
         }
     )
-    @PostMapping("/completions")
-    public ChatCompletionResponse chatCompletions(@RequestBody ChatCompletionRequest request) {
-        //Get x-aoai-token header
-        //Get x-api-key header
+    @PostMapping("/chat/completions")
+    public ChatCompletionResponse chatCompletions(
+        // @RequestHeader("x-aoai-token") String aoaiToken,
+        // @RequestHeader("x-api-key") String apiKey,
+        @RequestBody ChatCompletionRequest request) {
+
         //if there is no api_key or aoai_token in header, return code 401 with ErrorResponse
+        
 
         //if the api_key or aoai_token is invalid, return code 403 with ErrorResponse
+        
 
         // Process the completion request and generate the response
-        String completion = generateCompletion(request.getPrompt());
+
+        //Get issue body from the frontend
+        String issueBody = request.getPrompt();
+
+        //Set prompt message for chatGPT to generate the completion
+        String prompt = "{\"role\": \"system\", \"content\": \"너는 깃헙 이슈 요약 봇이야. 내가 전달하는 깃헙 레포 이슈 내용을 한국어로 요약해서 알려줘.\n이슈 내용:" + issueBody + "\n요약 내용은 bullet point 형식으로 알려줘.\"},";
+
+        //Create ChatGPT request
+        ChatRequest chatRequest = new ChatRequest(chatGPTApiDeploymentId, prompt);
+
+        //Call ChatGPT API
+        RestTemplate restTemplate = new RestTemplate();
+        ChatResponse chatResponse = restTemplate.postForObject(chatGPTApiEndpoint, chatRequest, ChatResponse.class);
+
+        if(chatResponse == null || chatResponse.getChoices() == null || chatResponse.getChoices().isEmpty()) {
+            return new ChatCompletionResponse("ChatGPT API response is empty");
+        }
+
+        //Get the response content only
+        String responseContent = chatResponse.getChoices().get(0).getMessage().getContent();
+
+        String completion = generateCompletion(responseContent);
+
         return new ChatCompletionResponse(completion);
     }
 
@@ -61,5 +102,7 @@ public class ChatController {
 
         return "Generated completion for prompt: " + prompt;
     }
+
+    
 
 }
