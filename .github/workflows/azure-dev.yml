@@ -47,7 +47,8 @@ jobs:
       - name: Create artifacts
         shell: bash
         run: |
-          swa build
+          export CI=false
+          swa build --app-location ./web --app-build-command "npm install && npm run build" 
 
       - name: Login to Azure
         uses: Azure/login@v1
@@ -73,6 +74,7 @@ jobs:
           swa deploy \
               -d ${{ env.SWA_TOKEN }} \
               --env default
+              ./web/build
 
       - name: Get ASWA hostname
         id: sttapp
