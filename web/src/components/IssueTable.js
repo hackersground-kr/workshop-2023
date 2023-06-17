@@ -24,7 +24,7 @@ function IssueTable({issues, user, repo}) {
 
     return (
         <div className="tableDiv">
-            <table className="table-auto border-collapse w-full my-8 py-2 align-left min-w-full shadow overflow-hidden rounded-xl bg-[#333]">
+            <table className="table-auto border-collapse w-full my-8 py-2 align-left min-w-full shadow overflow-hidden rounded-xl bg-[#282c34]">
                 <thead className='px-10 bg-gray'>
                     <tr>
                         <th className="tracking-wider py-5">#</th>
