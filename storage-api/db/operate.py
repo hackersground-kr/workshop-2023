@@ -50,14 +50,14 @@ def insert_issue(issue: Info):
             pass
         
         #Create random id for primary key
-        new_id = uuid.uuid4()
+        #new_id = uuid.uuid4()
         
         #Insert issue to table
         try:
             cursor.execute("""
             INSERT INTO issues (id, [user], repository, issueId, issueNumber, title, body, summary)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """, new_id, issue.user, issue.repository, issue.issueId, issue.issueNumber, issue.title, issue.body, issue.summary)
+            """, issue.id, issue.user, issue.repository, issue.issueId, issue.issueNumber, issue.title, issue.body, issue.summary)
             conn.commit()
             return True
         except Exception as e:
