@@ -33,4 +33,4 @@ build/
 .vscode/
 
 ### Ignore dev.properties ###
-*.dev.properties
+*-dev.properties

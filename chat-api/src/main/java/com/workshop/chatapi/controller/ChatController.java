@@ -1,15 +1,21 @@
 package com.workshop.chatapi.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -26,6 +32,10 @@ import com.workshop.chatapi.model.ErrorResponse;
 @SecurityRequirement(name="aoai_token")
 @SecurityRequirement(name="api_key")
 public class ChatController {
+
+    @Qualifier("openaiRestTemplate")
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Value("${CHATGPT_API_ENDPOINT}")
     private String chatGPTApiEndpoint;
@@ -55,54 +65,68 @@ public class ChatController {
             )
         }
     )
+
     @PostMapping("/chat/completions")
-    public ChatCompletionResponse chatCompletions(
-        // @RequestHeader("x-aoai-token") String aoaiToken,
-        // @RequestHeader("x-api-key") String apiKey,
+    public ResponseEntity<Object> chatCompletions(
+        @Parameter(hidden=true) @RequestHeader(value="x-aoai-token", required = false) String aoaiToken,
+        @Parameter(hidden=true) @RequestHeader(value="x-webapi-key", required=false) String apiKey,
         @RequestBody ChatCompletionRequest request) {
 
-        //if there is no api_key or aoai_token in header, return code 401 with ErrorResponse
-        
+        //Print the request header & body
+        System.out.println("aoai_token: " + aoaiToken);
+        System.out.println("api_key: " + apiKey);
+        System.out.println("request: " + request.getPrompt());
 
-        //if the api_key or aoai_token is invalid, return code 403 with ErrorResponse
-        
-
-        // Process the completion request and generate the response
-
-        //Get issue body from the frontend
-        String issueBody = request.getPrompt();
-
-        //Set prompt message for chatGPT to generate the completion
-        String prompt = "{\"role\": \"system\", \"content\": \"너는 깃헙 이슈 요약 봇이야. 내가 전달하는 깃헙 레포 이슈 내용을 한국어로 요약해서 알려줘.\n이슈 내용:" + issueBody + "\n요약 내용은 bullet point 형식으로 알려줘.\"},";
-
-        //Create ChatGPT request
-        ChatRequest chatRequest = new ChatRequest(chatGPTApiDeploymentId, prompt);
-
-        //Call ChatGPT API
-        RestTemplate restTemplate = new RestTemplate();
-        ChatResponse chatResponse = restTemplate.postForObject(chatGPTApiEndpoint, chatRequest, ChatResponse.class);
-
-        if(chatResponse == null || chatResponse.getChoices() == null || chatResponse.getChoices().isEmpty()) {
-            return new ChatCompletionResponse("ChatGPT API response is empty");
+        if (aoaiToken == null || aoaiToken.isEmpty()) {
+            ErrorResponse errorResponse = new ErrorResponse("Missing or empty aoai_token");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        } 
+        if (apiKey == null || apiKey.isEmpty()) {
+            ErrorResponse errorResponse = new ErrorResponse("Missing or empty api_key");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
 
-        //Get the response content only
+        if (!apiKey.equals(this.apiKey)) {
+            ErrorResponse errorResponse = new ErrorResponse("Invalid api_key");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+        }
+
+
+        // Get issue body from the frontend
+        String issueBody = request.getPrompt();
+
+        // Set prompt message for chatGPT to generate the completion
+        String prompt = "너는 깃헙 이슈 요약 봇이야. 내가 전달하는 깃헙 레포 이슈 내용을 한국어로 요약해서 알려줘.\n이슈 내용:" + issueBody + "\n요약 내용은 bullet point 형식으로 알려줘.";
+
+        // Create ChatGPT request
+        ChatRequest chatRequest = new ChatRequest(chatGPTApiDeploymentId, prompt);
+
+        ChatResponse chatResponse = null;
+        // Call ChatGPT API
+        try {
+            chatResponse = this.restTemplate.postForObject(chatGPTApiEndpoint, chatRequest, ChatResponse.class, new Object[] {});
+        } catch (Exception e) {
+            //Print exception
+            System.out.println("Exception: " + e.getMessage());
+        }
+
+        //Print chat response
+        System.out.println("chatResponse: " + chatResponse);
+
+        if (chatResponse == null || chatResponse.getChoices() == null || chatResponse.getChoices().isEmpty()) {
+            return ResponseEntity.ok(new ChatCompletionResponse("ChatGPT API response is empty"));
+        }
+
+        // Get the response content only
         String responseContent = chatResponse.getChoices().get(0).getMessage().getContent();
 
-        String completion = generateCompletion(responseContent);
+        //Print the response content
+        System.out.println("responseContent: " + responseContent);
 
-        return new ChatCompletionResponse(completion);
+        // Create the response object
+        ChatCompletionResponse response = new ChatCompletionResponse(responseContent);
+
+        return ResponseEntity.ok(response);
     }
-
-    private String generateCompletion(String prompt) {
-        // Logic to generate completion based on the prompt
-        // You can use Azure OpenAI or any other method to generate the completion
-
-        //Add Error Handling with ErrorResponse
-
-        return "Generated completion for prompt: " + prompt;
-    }
-
-    
 
 }

@@ -1,25 +1,28 @@
 package com.workshop.chatapi.model;
 
 public class Message {
+
     private String role;
     private String content;
 
-    //constructor, getters and setters
-    public Message(String role, String content) {
+    Message(String role, String content) {
         this.role = role;
         this.content = content;
     }
-    
-    public String getRole() {
-        return this.role;
+
+    Message() {
     }
 
-    public String getContent() {
-        return this.content;
+    public String getRole() {
+        return role;
     }
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getContent() {
+        return content;
     }
 
     public void setContent(String content) {
