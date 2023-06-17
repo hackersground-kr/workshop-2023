@@ -105,14 +105,6 @@ var appSettings = concat(concat(concat(commonAppSettings, isDotNet ? [
     name: 'GitHub__Agent'
     value: github.agent
   }
-  {
-    name: 'GitHub__ClientId'
-    value: github.clientId
-  }
-  {
-    name: 'GitHub__ClientSecret'
-    value: github.clientSecret
-  }
 ] : []), isJava ? [
   // Azure OpenAI Service
   {
