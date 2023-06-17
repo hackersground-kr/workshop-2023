@@ -1,4 +1,6 @@
 import os
+import uuid
+
 from dotenv import load_dotenv
 import pyodbc
 from model.models import Info
@@ -20,8 +22,7 @@ def create_table():
     
     cursor.execute("""
         CREATE TABLE issues (
-            [index] INT IDENTITY(1,1) PRIMARY KEY,
-            id VARCHAR(255) NOT NULL,
+            id VARCHAR(255) NOT NULL PRIMARY KEY,
             [user] VARCHAR(255) NOT NULL,
             repository VARCHAR(255) NOT NULL,
             issueId INT,
@@ -35,24 +36,33 @@ def create_table():
     conn.commit()
     
 def insert_issue(issue: Info):
-    #insert issue to table
-    cursor = conn.cursor()
+    try:
+        #insert issue to table
+        cursor = conn.cursor()
 
-    cursor.execute(f"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '{TABLE_NAME}'")
-    fetch_table = cursor.fetchone()
+        cursor.execute(f"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '{TABLE_NAME}'")
+        fetch_table = cursor.fetchone()
+        
+        #Create table if it doesn't exist
+        if fetch_table is None:
+            create_table()
+        else:
+            pass
+        
+        #Create random id for primary key
+        #new_id = uuid.uuid4()
+        
+        #Insert issue to table
+        try:
+            cursor.execute("""
+            INSERT INTO issues (id, [user], repository, issueId, issueNumber, title, body, summary)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """, issue.id, issue.user, issue.repository, issue.issueId, issue.issueNumber, issue.title, issue.body, issue.summary)
+            conn.commit()
+            return True
+        except Exception as e:
+            return e
     
-    #Create table if it doesn't exist
-    if fetch_table is None:
-        create_table()
-    else:
-        pass
-    
-    #Insert issue to table
-    result = cursor.execute("""
-        INSERT INTO issues (id, [user], repository, issueId, issueNumber, title, body, summary)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """, issue.id, issue.user, issue.repository, issue.issueId, issue.issueNumber, issue.title, issue.body, issue.summary)
-    conn.commit()
-    
-    return result
+    except Exception as e:
+        return e
 
