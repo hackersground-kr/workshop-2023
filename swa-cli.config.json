@@ -1,0 +1,12 @@
+{
+  "$schema": "https://aka.ms/azure/static-web-apps-cli/schema",
+  "configurations": {
+    "hg-workshop": {
+      "appLocation": "web",
+      "outputLocation": "build",
+      "appBuildCommand": "npm install && npm run build",
+      "run": "npm start",
+      "appDevserverUrl": "http://localhost:3000"
+    }
+  }
+}

@@ -47,6 +47,7 @@ jobs:
       - name: Create artifacts
         shell: bash
         run: |
+          export CI=false
           swa build
 
       - name: Login to Azure
