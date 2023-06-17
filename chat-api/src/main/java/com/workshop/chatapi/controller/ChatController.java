@@ -96,7 +96,7 @@ public class ChatController {
         String issueBody = request.getPrompt();
 
         // Set prompt message for chatGPT to generate the completion
-        String prompt = "너는 깃헙 이슈 요약 봇이야. 내가 전달하는 깃헙 레포 이슈 내용을 한국어로 요약해서 알려줘.\n이슈 내용:" + issueBody + "\n요약 내용은 bullet point 형식으로 알려줘.";
+        String prompt = "이슈 내용:" + issueBody;
 
         // Create ChatGPT request
         ChatRequest chatRequest = new ChatRequest(chatGPTApiDeploymentId, prompt);
