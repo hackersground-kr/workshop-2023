@@ -4,6 +4,10 @@ param name string
 param location string = 'Korea Central'
 @secure()
 param appServiceKey string
+@secure()
+param sqlServerAdminUsername string
+@secure()
+param sqlServerAdminPassword string
 
 param apiManagementPublisherName string = 'GitHub Issues Summary'
 param apiManagementPublisherEmail string = 'apim@hackersground.kr'
@@ -30,8 +34,23 @@ var apps = [
     siteConfig: {
       linuxFxVersion: 'DOTNETCORE|7.0'
     }
-    useAoai: false
+    isDotNet: true
+    isJava: false
+    isPython: false
+    apiKey: appServiceKey
+    openapi: {
+      title: 'GitHub Issues API'
+      version: 'v1'
+      server: 'https://appsvc-${name}-dotnet-api.azurewebsites.net'
+      includeOnDeployment: true
+    }
+    github: {
+      agent: 'GitHub Issues Bot'
+      clientId: 'to_be_replaced'
+      clientSecret: 'to_be_replaced'
+    }
     aoai: {}
+    sql: {}
     apimApi: {
       name: 'GitHubIssues'
       displayName: 'GitHubIssues'
@@ -57,12 +76,18 @@ var apps = [
     siteConfig: {
       linuxFxVersion: 'JAVA|17-java17'
     }
-    useAoai: true
+    isDotNet: false
+    isJava: true
+    isPython: false
+    apiKey: appServiceKey
+    openapi: {}
+    github: {}
     aoai: {
       apiEndpoint: 'to_be_replaced' //cogsvc.outputs.aoaiApiEndpoint
       apiVersion: 'to_be_replaced' //cogsvc.outputs.aoaiApiVersion
-      apiDeploymentId: 'to_be_replaced' //cogsvc.outputs.aoaiApiDeploymentId
+      deploymentId: 'to_be_replaced' //cogsvc.outputs.aoaiApiDeploymentId
     }
+    sql: {}
     apimApi: {
       name: 'ChatCompletions'
       displayName: 'ChatCompletions'
@@ -88,8 +113,20 @@ var apps = [
     siteConfig: {
       linuxFxVersion: 'PYTHON|3.11'
     }
-    useAoai: false
+    isDotNet: false
+    isJava: false
+    isPython: true
+    apiKey: appServiceKey
+    openapi: {}
+    github: {}
     aoai: {}
+    sql: {
+      location: location
+      admin: {
+        username: sqlServerAdminUsername
+        password: sqlServerAdminPassword
+      }
+    }
     apimApi: {
       name: 'GitHubIssueStorage'
       displayName: 'GitHubIssueStorage'
@@ -113,7 +150,13 @@ var apps = [
     useApp: false
     suffix: 'bff'
     siteConfig: {}
-    useAoai: false
+    isDotNet: false
+    isJava: false
+    isPython: false
+    apiKey: ''
+    openapi: {}
+    github: {}
+    sql: {}
     aoai: {}
     apimApi: {
       name: 'GitHubIssuesSummary'
@@ -142,7 +185,7 @@ var apps = [
           policy: {
               format: 'xml-link'
               value: 'https://raw.githubusercontent.com/hackersground-kr/workshop/main/infra/apim-policy-api-bff-op-issues.xml'
-          }  
+          }
         }
         {
           name: 'IssueById'
@@ -171,13 +214,17 @@ module appsvc './provision-appService.bicep' = [for (app, i) in apps: if (app.us
     name: '${name}-${app.suffix}'
     location: location
     linuxFxVersion: app.siteConfig.linuxFxVersion
-    useAoai: app.useAoai
-    aoaiApiEndpoint: app.useAoai ? app.aoai.apiEndpoint : ''
-    aoaiApiVersion: app.useAoai ? app.aoai.apiVersion : ''
-    aoaiApiDeploymentId: app.useAoai ? app.aoai.apiDeploymentId : ''
+    isDotNet: app.isDotNet
+    isJava: app.isJava
+    isPython: app.isPython
+    appServiceKey: app.apiKey
+    openapi: app.openapi
+    github: app.github
+    sqlService: app.sql
+    aoaiService: app.aoai
   }
 }]
-    
+
 module apim './provision-apiManagement.bicep' = {
   name: 'ApiManagement'
   scope: rg
