@@ -72,7 +72,7 @@ function Button() {
             });
             
         } else {
-            const response = await fetch(process.env.REACT_APP_ISSUE_ENDPOINT + '?user=' + user + '&repository=' + repo);
+            const response = await fetch(process.env.REACT_APP_BASE_URL + process.env.REACT_APP_ISSUE_ENDPOINT + '?user=' + user + '&repository=' + repo);
         
             if (response.ok) {
                 const data = await response.json();
