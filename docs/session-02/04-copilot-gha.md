@@ -22,7 +22,7 @@
     az account show
     ```
 
-1. 아래 명령어를 통해 애저 로그인 키를 생성합니다. 이 때 이름의 `hg{{숫자}}`는 앞서 생성한 `AZURE_ENV_NAME`입니다.
+1. 아래 명령어를 통해 애저 로그인 키를 생성합니다. 이 때 이름의 `hg{{숫자}}`는 앞서 생성한 `AZURE_ENV_NAME`입니다. (`echo $AZURE_ENV_NAME`로 확인 가능.)
 
     ```bash
     subscriptionId=$(az account show --query "id" -o tsv)
