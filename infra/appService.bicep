@@ -85,7 +85,7 @@ var commonAppSettings = [
     value: appServiceKey
   }
 ]
-var appSettings = concat(concat(concat(commonAppSettings, isDotNet ? [
+var appSettings = concat(concat(commonAppSettings, isDotNet ? [
   // OpenAPI
   {
     name: 'OpenApi__Title'
@@ -126,20 +126,14 @@ var appSettings = concat(concat(concat(commonAppSettings, isDotNet ? [
     name: 'AOAI_API_DEPLOYMENT_ID'
     value: aoai.deploymentId
   }
-] : []), isPython ? [
-  // Azure SQL connection string
-  {
-    name: 'CONNECTIONSTRINGS_AZURESQL'
-    value: sql.connectionString
-  }
-]: [])
+] : [])
 
-var connectionStrings = isPython? [ 
-  { 
-    name: 'STORAGE' 
-    type: 'SQLAzure' 
-    connectionString: sql.connectionString 
-  } 
+var connectionStrings = isPython? [
+  {
+    name: 'STORAGE'
+    type: 'SQLAzure'
+    connectionString: sql.connectionString
+  }
 ] : []
 
 var apiApp = {
