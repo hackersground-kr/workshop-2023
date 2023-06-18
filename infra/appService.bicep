@@ -134,12 +134,21 @@ var appSettings = concat(concat(concat(commonAppSettings, isDotNet ? [
   }
 ]: [])
 
+var connectionStrings = isPython? [ 
+  { 
+    name: 'STORAGE' 
+    type: 'SQLAzure' 
+    connectionString: sql.connectionString 
+  } 
+] : []
+
 var apiApp = {
   name: 'appsvc-${name}'
   location: location
   siteConfig: {
     linuxFxVersion: linuxFxVersion
     appSettings: appSettings
+    connectionStrings: connectionStrings
   }
 }
 
@@ -155,13 +164,7 @@ resource appsvc 'Microsoft.Web/sites@2022-03-01' = {
       linuxFxVersion: apiApp.siteConfig.linuxFxVersion
       alwaysOn: true
       appSettings: apiApp.siteConfig.appSettings
-      connectionStrings: isPython ? [
-        {
-          name: 'STORAGE'
-          type: 'SQLAzure'
-          value: sql.connectionString
-        }
-      ] : null
+      connectionStrings: apiApp.siteConfig.connectionStrings
       appCommandLine: isPython ? 'pip install -r requirements.txt uvicorn main:app --host=0.0.0.0': null
     }
   }
