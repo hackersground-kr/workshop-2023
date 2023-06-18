@@ -39,7 +39,13 @@
     ```
 
 1. 앱 서비스의 `location` 속성 값을 `location`으로 수정합니다.
+1. 앱 서비스의 `properties` 속성을 아래와 같이 수정해줍니다.
 
+    ```bicep
+    properties: {
+      serverFarmId: asplan.id
+    }
+    ```
 
 ## `main.bicep` 만들기
 
@@ -106,7 +112,7 @@
 1. 터미널에서 아래 명령어를 입력합니다.
 
     ```bash
-    azd auth login --use-device-code=false
+    azd auth login
     ```
 
    > 새 웹 브라우저 탭이 나타나면서 404 에러가 보인다면 주소창의 `http://localhost...`로 시작하는 주소를 복사해서 새 터미널 창에 `curl` 명령어와 함께 붙여넣습니다.

@@ -15,6 +15,7 @@
 
    > 새 웹 브라우저 탭이 나타나면서 404 에러가 보인다면 주소창의 `http://localhost...`로 시작하는 주소를 복사해서 새 터미널 창에 `curl` 명령어와 함께 붙여넣습니다.
    > 이 때 새 터미널 창을 bash 터미널로 열어서 잘 실행이 안 된다면, zsh 터미널로 열어서 해 보세요.
+   > 위의 두 방법이 작동하지 않는다면 해당 `az login --use-device-code` 명령어를 사용해 로그인해주세요.
 
 1. 아래 명령어를 통해 현재 구독을 확인합니다.
 
@@ -22,7 +23,7 @@
     az account show
     ```
 
-1. 아래 명령어를 통해 애저 로그인 키를 생성합니다. 이 때 이름의 `hg{{숫자}}`는 앞서 생성한 `AZURE_ENV_NAME`입니다.
+1. 아래 명령어를 통해 애저 로그인 키를 생성합니다. 이 때 이름의 `hg{{숫자}}`는 앞서 생성한 `AZURE_ENV_NAME`입니다. (`echo $AZURE_ENV_NAME`로 확인 가능.)
 
     ```bash
     subscriptionId=$(az account show --query "id" -o tsv)
@@ -55,14 +56,14 @@
 
 ## GitHub Actions 워크플로우 만들기
 
-1. `.github/workfows/main.yaml` 파일을 생성합니다.
+1. `.github/workflows/main.yaml` 파일을 생성합니다.
 1. Bing Chat에 아래 프롬프트를 던져 스켈레톤 워크플로우를 생성합니다.
 
     ```text
     Could you show me the skeleton structure of GitHub Actions workflow?
     ```
 
-   만들어진 스켈레톤 워크플로우를 복사해서 `.github/workfows/main.yaml` 파일에 붙여 넣습니다.
+   만들어진 스켈레톤 워크플로우를 복사해서 `.github/workflows/main.yaml` 파일에 붙여 넣습니다.
 
 1. 워크플로우의 `name` 속성에 `Development` 라고 값을 줍니다.
 1. `on` 속성 밑에 아래 주석을 추가합니다.
@@ -112,28 +113,23 @@
 1. 그 다음에 아래 주석을 추가합니다.
 
     ```yml
-    # add a step to zip the publish folder
-    ```
-
-1. 그 다음에 아래 주석을 추가합니다.
-
-    ```yml
     # add a step to login to Azure
     ```
 
 1. 그 다음에 아래 주석을 추가합니다.
 
     ```yml
-    # add a step to deploy the artifact using Azure CLI
+    # Deploy to Azure Web apps
     ```
 
-   이 때 필요하다면 아래와 같이 커맨드를 수정해야 할 수도 있습니다.
+   이 때 필요하다면 아래와 같이 수정해야 할 수도 있습니다. `secrets.AZURE_WEBAPP_NAME`은 시크릿에 등록해야합니다.
 
     ```bash
-    az webapp deployment source config-zip \
-        --resource-group "rg-${{ secrets.AZURE_ENV_NAME }}" \
-        --name "appsvc-${{ secrets.AZURE_ENV_NAME }}" \
-        --src ./publish/azure-dev.zip
+    - name: 'Run Azure webapp deploy action using publish profile credentials'
+      uses: azure/webapps-deploy@v2
+      with: 
+        app-name: ${{ secrets.AZURE_WEBAPP_NAME }} # Replace with your app name
+        package: publish
     ```
 
 1. 아래 명령어를 통해 코드를 푸시하고 GitHub 액션 워크플로우가 작동하는 것을 확인합니다.

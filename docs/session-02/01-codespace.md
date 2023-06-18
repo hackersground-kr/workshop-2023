@@ -161,20 +161,22 @@
     {
       ...
       "customizations": {
-        "extensions": [
-          // GitHub 코파일럿 관련
-          "GitHub.copilot",
-          "GitHub.copilot-labs",
-          "GitHub.copilot-chat",
+        "vscode": {
+          "extensions": [
+            // GitHub 코파일럿 관련
+            "GitHub.copilot",
+            "GitHub.copilot-labs",
+            "GitHub.copilot-chat",
 
-          // C# 관련
-          "ms-dotnettools.vscode-dotnet-pack",
-          "kreativ-software.csharpextensions",
+            // C# 관련
+            "ms-dotnettools.vscode-dotnet-pack",
+            "kreativ-software.csharpextensions",
 
-          // Azure 관련
-          "ms-vscode.vscode-node-azure-pack",
-          "ms-azuretools.vscode-bicep"
-        ],
+            // Azure 관련
+            "ms-vscode.vscode-node-azure-pack",
+            "ms-azuretools.vscode-bicep"
+          ],
+        }
       },
       ...
     }
@@ -188,9 +190,14 @@
     {
       ...
       "customizations": {
-        "settings": {
-          "editor.minimap.enabled": false,
-          "explorer.sortOrder": "type"
+        "vscode": {
+
+          ...
+
+          "settings": {
+            "editor.minimap.enabled": false,
+            "explorer.sortOrder": "type"
+          }
         }
       },
       ...
