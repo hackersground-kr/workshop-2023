@@ -37,13 +37,13 @@ public class ChatController {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${CHATGPT_API_ENDPOINT}")
+    @Value("${AOAI_API_ENDPOINT}")
     private String chatGPTApiEndpoint;
 
-    @Value("${CHATGPT_API_DEPLOYMENT_ID}")
+    @Value("${AOAI_API_DEPLOYMENT_ID}")
     private String chatGPTApiDeploymentId;
 
-    @Value("${CHATGPT_API_KEY}")
+    @Value("${AOAI_API_KEY}")
     private String chatGPTApiKey;
 
     @Value("${Auth__ApiKey}")

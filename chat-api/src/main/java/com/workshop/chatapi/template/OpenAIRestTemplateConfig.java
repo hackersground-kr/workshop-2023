@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -13,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class OpenAIRestTemplateConfig {
-    @Value("${CHATGPT_API_KEY}")
+    @Value("${AOAI_API_KEY}")
     private String openaiApiKey;
 
     @Bean
