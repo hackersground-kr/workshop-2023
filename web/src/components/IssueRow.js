@@ -44,7 +44,7 @@ function IssueRow({issue, index, user, repo}) {
 
         } else {
             //Call issue/id API endpoint
-            const response = await fetch(process.env.REACT_APP_ISSUE_ENDPOINT + '/' + id + '?user=' + user + '&repository=' + repo);
+            const response = await fetch(process.env.REACT_APP_BASE_URL + process.env.REACT_APP_ISSUE_ENDPOINT + '/' + id + '?user=' + user + '&repository=' + repo);
 
             const data = await response.json();
             setBody(data.body); 
@@ -56,7 +56,7 @@ function IssueRow({issue, index, user, repo}) {
         setExpandedSummary(!expandedSummary);
 
         //Summarize the issue body
-        const response = await fetch(process.env.REACT_APP_CHAT_ENDPOINT, {
+        const response = await fetch(process.env.REACT_APP_BASE_URL + process.env.REACT_APP_CHAT_ENDPOINT, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ function IssueRow({issue, index, user, repo}) {
     async function saveSummarizedIssues() {
 
         //Save summarized completion to the storage with github issue info.
-        const response = await fetch(process.env.REACT_APP_ISSUE_ENDPOINT, {
+        const response = await fetch(process.env.REACT_APP_BASE_URL + process.env.REACT_APP_ISSUE_ENDPOINT, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
