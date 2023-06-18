@@ -44,7 +44,7 @@ function IssueRow({issue, index, user, repo}) {
 
         } else {
             //Call issue/id API endpoint
-            const response = await fetch(process.env.REACT_APP_BASE_URL + process.env.REACT_APP_ISSUE_ENDPOINT + '/' + id + '?user=' + user + '&repository=' + repo);
+            const response = await fetch(process.env.REACT_APP_BASE_URL + process.env.REACT_APP_ISSUE_ENDPOINT + '/' + number + '?user=' + user + '&repository=' + repo);
 
             const data = await response.json();
             setBody(data.body); 
