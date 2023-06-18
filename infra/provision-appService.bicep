@@ -97,6 +97,7 @@ module appsvc './appService.bicep' = {
     sqlAdminPassword: isPython ? sqlService.admin.password : ''
     aoaiApiEndpoint: isJava ? aoaiService.apiEndpoint : ''
     aoaiApiVersion: isJava ? aoaiService.apiVersion : ''
+    aoaiApiKey: isJava ? aoaiService.apiKey : ''
     aoaiApiDeploymentId: isJava ? aoaiService.deploymentId : ''
   }
 }
