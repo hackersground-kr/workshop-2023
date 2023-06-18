@@ -97,38 +97,38 @@ jobs:
             --named-value-id STTAPP_URL \
             --value $hostname)
 
-      # - name: Check APIM Product with API
-      #   id: apimcheck
-      #   shell: bash
-      #   run: |
-      #     hostname=$(echo "${{ steps.sttapp.outputs.hostname }}" | cut -d'.' -f1)
+      - name: Check APIM Product with API
+        id: apimcheck
+        shell: bash
+        run: |
+          hostname=$(echo "${{ steps.sttapp.outputs.hostname }}" | cut -d'.' -f1)
 
-      #     api=$(az apim product api list \
-      #       -g ${{ env.AZURE_RESOURCE_GROUP_NAME }} \
-      #       -n ${{ env.AZURE_APIM_NAME }} \
-      #       --product-id $hostname \
-      #       --query "[?name == '${{ env.AZURE_WEBAPP_NAME }}'].name" -o tsv)
+          api=$(az apim product api list \
+            -g ${{ env.AZURE_RESOURCE_GROUP_NAME }} \
+            -n ${{ env.AZURE_APIM_NAME }} \
+            --product-id $hostname \
+            --query "[?name == 'GitHubIssuesSummary'].name" -o tsv)
 
-      #     if [ "$api" == "" ]; then
-      #       checked='false'
-      #     else
-      #       checked='true'
-      #     fi
+          if [ "$api" == "" ]; then
+            checked='false'
+          else
+            checked='true'
+          fi
 
-      #     echo "hostname=$hostname" >> $GITHUB_OUTPUT
-      #     echo "checked=$checked" >> $GITHUB_OUTPUT
+          echo "hostname=$hostname" >> $GITHUB_OUTPUT
+          echo "checked=$checked" >> $GITHUB_OUTPUT
 
-      # - name: Update APIM Product with API
-      #   if: steps.apimcheck.outputs.checked != 'true'
-      #   shell: bash
-      #   run: |
-      #     hostname=${{ steps.apimcheck.outputs.hostname }}
+      - name: Update APIM Product with API
+        if: steps.apimcheck.outputs.checked != 'true'
+        shell: bash
+        run: |
+          hostname=${{ steps.apimcheck.outputs.hostname }}
 
-      #     api=$(az apim product api add \
-      #       -g ${{ env.AZURE_RESOURCE_GROUP_NAME }} \
-      #       -n ${{ env.AZURE_APIM_NAME }} \
-      #       --product-id $hostname \
-      #       --api-id ${{ env.AZURE_WEBAPP_NAME }})
+          api=$(az apim product api add \
+            -g ${{ env.AZURE_RESOURCE_GROUP_NAME }} \
+            -n ${{ env.AZURE_APIM_NAME }} \
+            --product-id $hostname \
+            --api-id 'GitHubIssuesSummary')
 
   build_and_deploy_appservice:
     name: Build and Deploy to App Service (Backend)

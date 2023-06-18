@@ -127,9 +127,9 @@ var appSettings = concat(concat(concat(commonAppSettings, isDotNet ? [
     value: aoai.deploymentId
   }
 ] : []), isPython ? [
-  // Azure SQL Database
+  // Azure SQL connection string
   {
-    name: 'SQLAZURECONNSTR_STORAGE'
+    name: 'CONNECTIONSTRINGS_AZURESQL'
     value: sql.connectionString
   }
 ]: [])
@@ -155,6 +155,13 @@ resource appsvc 'Microsoft.Web/sites@2022-03-01' = {
       linuxFxVersion: apiApp.siteConfig.linuxFxVersion
       alwaysOn: true
       appSettings: apiApp.siteConfig.appSettings
+      connectionstrings: isPython ? [
+        {
+          name: 'STORAGE'
+          type: 'SQLAzure'
+          value: sql.connectionString
+        }
+      ] : null
       appCommandLine: isPython ? 'pip install -r requirements.txt uvicorn main:app --host=0.0.0.0': null
     }
   }
