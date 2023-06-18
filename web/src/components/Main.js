@@ -54,20 +54,21 @@ function Button() {
         if (process.env.NODE_ENV === 'development') {
             console.log(process.env.NODE_ENV);
 
-            const sampleData = [
-                { id: 1, number: 1, title: "Issue 1 for testing" , body: "Issue 1 body for testing"},
-                { id: 2, number: 2, title: "Issue 2 for testing" , body: "Issue 2 body for testing"},
-                { id: 3, number: 3, title: "Issue 3 for testing" , body: "Issue 3 body for testing"},
-                { id: 4, number: 4, title: "Issue 4 for testing" , body: "Issue 4 body for testing"},
-                { id: 5, number: 5, title: "Issue 5 for testing" , body: "Issue 5 body for testing"},
-                { id: 6, number: 6, title: "Issue 6 for testing" , body: "Issue 6 body for testing"},
-                { id: 7, number: 7, title: "Issue 7 for testing" , body: "Issue 7 body for testing"},
-                { id: 8, number: 8, title: "Issue 8 for testing" , body: "Issue 8 body for testing"},
-                { id: 9, number: 9, title: "Issue 9 for testing" , body: "Issue 9 body for testing"},
-                { id: 10, number: 10, title: "Issue 10 for testing" , body: "Issue 10 body for testing"},
-            ];
+            // const sampleData = [
+            //     { id: 1, number: 1, title: "Issue 1 for testing" , body: "Issue 1 body for testing"},
+            //     { id: 2, number: 2, title: "Issue 2 for testing" , body: "Issue 2 body for testing"},
+            //     { id: 3, number: 3, title: "Issue 3 for testing" , body: "Issue 3 body for testing"},
+            //     { id: 4, number: 4, title: "Issue 4 for testing" , body: "Issue 4 body for testing"},
+            //     { id: 5, number: 5, title: "Issue 5 for testing" , body: "Issue 5 body for testing"},
+            //     { id: 6, number: 6, title: "Issue 6 for testing" , body: "Issue 6 body for testing"},
+            //     { id: 7, number: 7, title: "Issue 7 for testing" , body: "Issue 7 body for testing"},
+            //     { id: 8, number: 8, title: "Issue 8 for testing" , body: "Issue 8 body for testing"},
+            //     { id: 9, number: 9, title: "Issue 9 for testing" , body: "Issue 9 body for testing"},
+            //     { id: 10, number: 10, title: "Issue 10 for testing" , body: "Issue 10 body for testing"},
+            // ];
+            const sampleData = { "items": [{"id": 12343, "number": 2308, "title": "Bump Issue", "body": "BODY"}, {"id": 45234, "number": 234343, "title": "Bump Issue", "body": "BODY"}]}
             //Add sample data to issues
-            sampleData.forEach((data) => {
+            sampleData.items.forEach((data) => {
                 setIssues(issues.push(data));
             });
             
@@ -76,7 +77,9 @@ function Button() {
         
             if (response.ok) {
                 const data = await response.json();
-                setIssues(data.items);
+                data.items.forEach((data) => {
+                    setIssues(issues.push(data));
+                });
             } else if (response.status === 401) {
                 setError('Unauthorized. Please log in to access GitHub issues.');
             } else if (response.status === 403) {
