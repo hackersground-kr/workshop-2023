@@ -11,7 +11,7 @@ public class ChatRequest {
         this.model = model;
 
         this.messages = new ArrayList<>();
-        this.messages.add(new Message("system", "너는 깃헙 이슈 요약 봇이야. 내가 전달하는 깃헙 레포 이슈 내용을 한국어로 요약해서 알려줘. 요약 내용은 bullet point 형식으로 알려줘."));
+        this.messages.add(new Message("system", "너는 깃헙 이슈 요약 봇이야. 내가 전달하는 깃헙 레포 이슈 내용을 한국어로 요약해서 알려줘. 요약 내용은 bullet point 리스트 HTML 형식으로 return 해줘."));
         this.messages.add(new Message("user", prompt));
     }
 
