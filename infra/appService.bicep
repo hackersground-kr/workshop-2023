@@ -155,7 +155,7 @@ resource appsvc 'Microsoft.Web/sites@2022-03-01' = {
       linuxFxVersion: apiApp.siteConfig.linuxFxVersion
       alwaysOn: true
       appSettings: apiApp.siteConfig.appSettings
-      connectionstrings: isPython ? [
+      connectionStrings: isPython ? [
         {
           name: 'STORAGE'
           type: 'SQLAzure'
