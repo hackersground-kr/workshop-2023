@@ -55,14 +55,14 @@
 
 ## GitHub Actions 워크플로우 만들기
 
-1. `.github/workfows/main.yaml` 파일을 생성합니다.
+1. `.github/workflows/main.yaml` 파일을 생성합니다.
 1. Bing Chat에 아래 프롬프트를 던져 스켈레톤 워크플로우를 생성합니다.
 
     ```text
     Could you show me the skeleton structure of GitHub Actions workflow?
     ```
 
-   만들어진 스켈레톤 워크플로우를 복사해서 `.github/workfows/main.yaml` 파일에 붙여 넣습니다.
+   만들어진 스켈레톤 워크플로우를 복사해서 `.github/workflows/main.yaml` 파일에 붙여 넣습니다.
 
 1. 워크플로우의 `name` 속성에 `Development` 라고 값을 줍니다.
 1. `on` 속성 밑에 아래 주석을 추가합니다.
