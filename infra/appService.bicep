@@ -165,7 +165,7 @@ resource appsvc 'Microsoft.Web/sites@2022-03-01' = {
       alwaysOn: true
       appSettings: apiApp.siteConfig.appSettings
       connectionStrings: apiApp.siteConfig.connectionStrings
-      appCommandLine: isPython ? 'pip install -r requirements.txt uvicorn main:app --host=0.0.0.0': null
+      appCommandLine: isPython ? 'pip install -r requirements.txt && python -m uvicorn main:app --host=0.0.0.0': null
     }
   }
 }
