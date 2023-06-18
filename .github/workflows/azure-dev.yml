@@ -242,7 +242,7 @@ jobs:
             -n ${{ env.AZURE_WEBAPP_NAME_JAVA }} \
             --settings AOAI_API_DEPLOYMENT_ID="${{ vars.AOAI_API_DEPLOYMENT_ID }}")
 
-            appsettings_updated=$(az webapp config appsettings set \
+          appsettings_updated=$(az webapp config appsettings set \
             -g ${{ env.AZURE_RESOURCE_GROUP_NAME }} \
             -n ${{ env.AZURE_WEBAPP_NAME_JAVA }} \
             --settings AOAI_API_KEY="${{ secrets.AOAI_API_KEY }}")
