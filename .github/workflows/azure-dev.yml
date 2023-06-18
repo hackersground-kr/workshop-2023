@@ -213,6 +213,16 @@ jobs:
           app-name: ${{ env.AZURE_WEBAPP_NAME_PYTHON }}
           package: storage-api
 
+      - name: Update APIM settings - JAVA
+        if: matrix.platform == 'java'
+        shell: bash
+        run: |
+          nv=$(az apim nv update \
+            -g ${{ env.AZURE_RESOURCE_GROUP_NAME }} \
+            -n ${{ env.AZURE_APIM_NAME }} \
+            --named-value-id AOAI_TOKEN \
+            --value ${{ secrets.AOAI_API_KEY }})
+
       - name: Update app settings - JAVA
         if: matrix.platform == 'java'
         shell: bash
@@ -232,7 +242,7 @@ jobs:
             -n ${{ env.AZURE_WEBAPP_NAME_JAVA }} \
             --settings AOAI_API_DEPLOYMENT_ID="${{ vars.AOAI_API_DEPLOYMENT_ID }}")
 
-          appsettings_updated=$(az webapp config appsettings set \
+            appsettings_updated=$(az webapp config appsettings set \
             -g ${{ env.AZURE_RESOURCE_GROUP_NAME }} \
             -n ${{ env.AZURE_WEBAPP_NAME_JAVA }} \
             --settings AOAI_API_KEY="${{ secrets.AOAI_API_KEY }}")
