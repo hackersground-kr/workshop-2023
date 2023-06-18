@@ -28,6 +28,7 @@ param sqlService object = {
 param aoaiService object = {
   apiEndpoint: ''
   apiVersion: ''
+  apiKey: ''
   deploymentId: ''
 }
 

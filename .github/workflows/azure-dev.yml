@@ -192,23 +192,47 @@ jobs:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Deploy .NET App to Azure
+      - name: Deploy App to Azure - .NET
         if: matrix.platform == 'dotnet'
         uses: Azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME_DOTNET }}
           package: issue-api/bin/Release/net7.0/publish
 
-      - name: Deploy Java App to Azure
+      - name: Deploy App to Azure - JAVA
         if: matrix.platform == 'java'
         uses: Azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME_JAVA }}
           package: chat-api/target/*.jar
 
-      - name: Deploy Python App to Azure
+      - name: Deploy App to Azure - PYTHON
         if: matrix.platform == 'python'
         uses: Azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME_PYTHON }}
           package: storage-api
+
+      - name: Update app settings - JAVA
+        if: matrix.platform == 'java'
+        shell: bash
+        run: |
+          appsettings_updated=$(az webapp config appsettings set \
+            -g ${{ env.AZURE_RESOURCE_GROUP_NAME }} \
+            -n ${{ env.AZURE_WEBAPP_NAME_JAVA }} \
+            --settings AOAI_API_ENDPOINT="${{ vars.AOAI_API_ENDPOINT }}")
+
+          # appsettings_updated=$(az webapp config appsettings set \
+          #   -g ${{ env.AZURE_RESOURCE_GROUP_NAME }} \
+          #   -n ${{ env.AZURE_WEBAPP_NAME_JAVA }} \
+          #   --settings AOAI_API_VERSION="${{ vars.AOAI_API_VERSION }}")
+
+          appsettings_updated=$(az webapp config appsettings set \
+            -g ${{ env.AZURE_RESOURCE_GROUP_NAME }} \
+            -n ${{ env.AZURE_WEBAPP_NAME_JAVA }} \
+            --settings AOAI_API_DEPLOYMENT_ID="${{ vars.AOAI_API_DEPLOYMENT_ID }}")
+
+          appsettings_updated=$(az webapp config appsettings set \
+            -g ${{ env.AZURE_RESOURCE_GROUP_NAME }} \
+            -n ${{ env.AZURE_WEBAPP_NAME_JAVA }} \
+            --settings AOAI_API_KEY="${{ secrets.AOAI_API_KEY }}")

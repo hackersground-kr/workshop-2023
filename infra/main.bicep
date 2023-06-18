@@ -85,6 +85,7 @@ var apps = [
     aoai: {
       apiEndpoint: 'to_be_replaced' //cogsvc.outputs.aoaiApiEndpoint
       apiVersion: 'to_be_replaced' //cogsvc.outputs.aoaiApiVersion
+      apiKey: 'to_be_replaced' //cogsvc.outputs.aoaiApiKey
       deploymentId: 'to_be_replaced' //cogsvc.outputs.aoaiApiDeploymentId
     }
     sql: {}

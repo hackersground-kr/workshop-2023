@@ -33,6 +33,8 @@ param sqlAdminPassword string
 
 param aoaiApiEndpoint string
 param aoaiApiVersion string = '2022-12-01'
+@secure()
+param aoaiApiKey string
 param aoaiApiDeploymentId string
 
 var asplan = {
@@ -59,6 +61,7 @@ var github = {
 var aoai = {
   endpoint: aoaiApiEndpoint
   apiVersion: aoaiApiVersion
+  apiKey: aoaiApiKey
   deploymentId: aoaiApiDeploymentId
 }
 
@@ -114,6 +117,10 @@ var appSettings = concat(concat(concat(commonAppSettings, isDotNet ? [
   {
     name: 'AOAI_API_VERSION'
     value: aoai.apiVersion
+  }
+  {
+    name: 'AOAI_API_KEY'
+    value: aoai.apiKey
   }
   {
     name: 'AOAI_API_DEPLOYMENT_ID'
