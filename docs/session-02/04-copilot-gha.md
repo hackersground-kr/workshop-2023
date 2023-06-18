@@ -112,28 +112,23 @@
 1. 그 다음에 아래 주석을 추가합니다.
 
     ```yml
-    # add a step to zip the publish folder
-    ```
-
-1. 그 다음에 아래 주석을 추가합니다.
-
-    ```yml
     # add a step to login to Azure
     ```
 
 1. 그 다음에 아래 주석을 추가합니다.
 
     ```yml
-    # add a step to deploy the artifact using Azure CLI
+    # Deploy to Azure Web apps
     ```
 
-   이 때 필요하다면 아래와 같이 커맨드를 수정해야 할 수도 있습니다.
+   이 때 필요하다면 아래와 같이 수정해야 할 수도 있습니다. `secrets.AZURE_WEBAPP_NAME`은 시크릿에 등록해야합니다.
 
     ```bash
-    az webapp deployment source config-zip \
-        --resource-group "rg-${{ secrets.AZURE_ENV_NAME }}" \
-        --name "appsvc-${{ secrets.AZURE_ENV_NAME }}" \
-        --src ./publish/azure-dev.zip
+    - name: 'Run Azure webapp deploy action using publish profile credentials'
+      uses: azure/webapps-deploy@v2
+      with: 
+        app-name: ${{ secrets.AZURE_WEBAPP_NAME }} # Replace with your app name
+        package: publish
     ```
 
 1. 아래 명령어를 통해 코드를 푸시하고 GitHub 액션 워크플로우가 작동하는 것을 확인합니다.
