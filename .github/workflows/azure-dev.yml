@@ -44,6 +44,12 @@ jobs:
         run: |
           npm install -g @azure/static-web-apps-cli
 
+      - name: Update configuration
+        shell: pwsh
+        run: |
+          $(Get-Content -Path ./web/.env) -replace "{{BASE_URL}}", "https://${{ env.AZURE_APIM_NAME }}.azure-api.net" | `
+            Out-File ./web/.env -Encoding utf-8 -Force
+
       - name: Create artifacts
         shell: bash
         run: |
