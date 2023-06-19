@@ -101,87 +101,55 @@ Python 외 .NET과 Java는 빌드를 통해 결과물을 생성해야 합니다.
 * Chat API: `chat-api/target/chat-api-0.0.1-SNAPSHOT.jar`
 * Storage API: `storage-api`
 
-## 정적 웹 앱 생성 및 배포하기
+## 정적 웹 앱 배포 pipeline 수정하기
 
-정적 웹 앱은 portal에서 코드 배포를 Github Repo로 잡으면서 자동으로 CI/CD workflow가 생성되어 이미 웹 사이트가 배포 되었습니다.
+정적 웹 앱은 portal에서 코드 배포를 Github Repo로 잡으면서 자동으로 CI/CD workflow가 생성됩니다.
 
-## API Management 설정하기
+혹시 현재 레포의 `.github/workflows` 폴더에 `azure-static-webapps-{정적 웹앱 URL 이름}.yml` 이 없다면 `git pull`로 변경 사항을 받아옵니다.
 
-API Management를 설정하기 위해서는 다시 Azure Portal로 돌아가야 합니다.
+`azure-static-webapps-{정적 웹앱 URL 이름}.yml` 파일을 열어서 아래와 같이 수정합니다.
 
-Azure Portal에서 APIM으로 접속해 `API` 탭에서 `Add API`를 누릅니다.
+```yaml
+name: Azure Static Web Apps CI/CD
 
-각 API 웹 앱에 접속해보면 Swagger UI의 OpenAPI 명세서를 확인할 수 있고, 타이틀 밑에 OpenAPI Specification 링크가 첨부되어 있습니다.
+on:
+  push:
+    branches:
+      - session01/manual
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
 
-![OpenAPI Specification](images/openapi_specification.png)
+env:
+  CI: false
+  AZURE_APIM_NAME_SWA: 'apim-${{ vars.AZURE_ENV_NAME_SWA }}'
 
-해당 링크를 그대로 복사해서 `OpenAPI Specification URL`에 붙여넣기 합니다.
-그러면 자동으로 `Display name`과 `Name`이 채워집니다.
+jobs:
+  build_and_deploy_job:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    name: Build and Deploy Job
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: true
 
-* API URL suffix
-  * Issue API: `github`
-  * Chat API: `aoai`
-  * Storage API: `storage`
+      - name: Update configuration
+        shell: pwsh
+        run: |
+          $(Get-Content -Path ./web/.env) -replace "{{BASE_URL}}", "https://${{ env.AZURE_APIM_NAME_SWA }}.azure-api.net" | `
+            Out-File ./web/.env -Encoding utf-8 -Force
+            
+      - name: Build And Deploy
 
-### Github Issues API(Issue API) Inbound policy 설정
-```xml
-<policies>
-    <inbound>
-        <base />
-        <get-authorization-context provider-id="github-issues" authorization-id="github-issues" context-variable-name="auth-context" identity-type="managed" ignore-error="false" />
-        <set-header name="x-github-token" exists-action="override">
-            <value>@(((Authorization)context.Variables.GetValueOrDefault("auth-context"))?.AccessToken)</value>
-        </set-header>
-        <set-header name="User-Agent" exists-action="override">
-            <value>API Management</value>
-        </set-header>
-    </inbound>
-    <backend>
-        <base />
-    </backend>
-    <outbound>
-        <base />
-    </outbound>
-    <on-error>
-        <base />
-    </on-error>
-</policies>
-```
-### Chat Completion API(Chat API) Inboud policy 설정
-```xml
-<policies>
-    <inbound>
-        <base />
-        <set-header name="x-aoai-token" exists-action="override">
-            <value>{{AOAI_TOKEN 값 넣기}}</value>
-        </set-header>
-    </inbound>
-    <backend>
-        <base />
-    </backend>
-    <outbound>
-        <base />
-    </outbound>
-    <on-error>
-        <base />
-    </on-error>
-</policies>
+      # 이 밑으로는 수정 사항 없음.
 ```
 
-### Github Issues API(Storage API) policy 설정
-설정할 내용 없음
+### Github > Settings > Secrets and variables > Action 에 변수 추가하기
 
-### GithubIssuesSummary 라는 새로운 API 만들기
+workflow에서 `vars.AZURE_ENV_NAME_SWA` 변수를 사용하고 있으나 우리는 해당 변수를 정의하지 않았기 때문에 Variable에 `AZURE_ENV_NAME_SWA `를 추가합니다. 키 값은 리소스 그룹 이름(`rg-hg{랜덤숫자}`)의 `hg{랜덤숫자}`를 추가합니다.
 
-Open API 명세서 파일 경로: `infra/openapi-bff.yaml`
 
-`새로운 API 추가`에서 `Select a file`로 Open API 명세서 파일을 업로드합니다.
-
-* API URL Suffix: bff
-
-### APIM Github OAuth 인증 설정하기
-참고 링크: [Github OAuth 인증 설정하기](https://learn.microsoft.com/en-us/azure/api-management/authorizations-how-to-github)
-
-* 권한 부여 이름: `github-issues`
-
-[Azure Portal에서 리소스 구성하기](./02-portal-works.md) 👈 이전 | 다음 👉 [Bicep & Azure Developer CLI로 한 번에 프로비저닝하기](./04-bicep-azd-provision.md)
+[Azure Portal에서 리소스 구성하기](./02-portal-works.md) 👈 이전 | 다음 👉 [API Management 수동 설정하기](./04-apim-config.md)
