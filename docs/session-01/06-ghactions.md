@@ -39,6 +39,8 @@ gh auth login
 gh workflow run "Azure Dev" --repo $GITHUB_USERNAME/workshop
 ```
 
+> 만약 `.github/workflows/azure-dev.yml` 파일 이외에 [3단계](./03-vscode.md)에서 사용했던 다른 파일들이 있다면, 해당 파일들은 삭제하거나 파일 이름을 `*.yml.bak`으로 바꿉니다.
+
 ## 배포 확인하기
 GitHub Actions에 새로운 workflow가 실행되고 있음을 확인할 수 있습니다.
 
