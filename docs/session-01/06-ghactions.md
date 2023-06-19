@@ -49,4 +49,7 @@ Github Actions에 새로운 workflow가 실행되고 있음을 확인할 수 있
 
 ![workflow log](images/workflow_log.png)
 
-[Bicep & Azure Developer CLI로 한 번에 프로비저닝하기](./04-bicep-azd-provision.md) 👈 이전
+## APIM 리소스 접속해서 Github Auth 설정하기
+[Visual Studio Code에서 원클릭 배포하기](./03-vscode.md)에서 한 Github OAuth을 동일하게 반복합니다.
+
+[Bicep & Azure Developer CLI로 한 번에 프로비저닝하기](./05-bicep-azd-provision.md) 👈 이전

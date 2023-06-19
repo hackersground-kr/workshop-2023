@@ -103,6 +103,12 @@
 
 <Azure Functions API 및 스테이징 환경을 위한 영역>
 * East Asia
+  
+<배포 세부 정보>
+* Github 계정 연결
+* 조직: 본인 계정
+* 리포지토리: 포크 뜬 `workshop`
+* 분기: `session01/manual`
 
 
 다음 👉 [Azure 포털에서 리소스 구성 설정하기](./02-portal-works.md)

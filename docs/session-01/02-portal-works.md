@@ -130,14 +130,13 @@ API Management는 API들이 배포된 후에 OpenAPI 문서를 이용해서 편�
     * value: `{{api_key값}}`
     * action: `override`
 
-## 정적 웹 앱 APIM 연결하기
-정적 웹 앱의 `API` 메뉴로 들어갑니다.
+<!-- 정적 웹 앱의 `API` 메뉴로 들어갑니다.
 
 만약 `링크`가 활성화되어 있지 않다면 해당 메뉴 상단에 `업그레이드하려면 클릭하세요` 를 선택해서 요금제를 업그레이드 합니다.
 
 요금제를 업그레이드 하면 `Production` 하단의 `링크`가 활성화 됩니다.
 
-`링크`를 클릭하여 `API 관리`(==`API Managment`) 리소스 종류를 연결합니다. 
+`링크`를 클릭하여 `API 관리`(==`API Managment`) 리소스 종류를 연결합니다.  -->
 
 
 [Azure 포털에서 리소스 프로비저닝하기](./01-portal-provision.md) 👈 이전 | 다음 👉 [VSCode에서 원클릭 배포하기](./03-vscode.md)
