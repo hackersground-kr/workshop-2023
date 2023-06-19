@@ -80,7 +80,7 @@ Python 외 .NET과 Java는 빌드를 통해 결과물을 생성해야 합니다.
 * Issue API(.NET) 빌드
   ```bash
   cd issue-api
-  dotnet build issue-api -c Release && dotnet publish issue-api -c Release
+  dotnet build -c Release && dotnet publish -c Release
   ```
 
 * Chat API(Java) 빌드
