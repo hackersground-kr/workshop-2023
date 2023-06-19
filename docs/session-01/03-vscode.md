@@ -10,38 +10,51 @@
  
 만약 로컬에서 앱을 실행해 보고 싶다면 아래와 같은 방법을 따릅니다.
 
-> 위에 언급한 모든 프레임워크와 라이브러리가 설치되어 있다고 가정합니다. 설치되어 있지 않을 경우 각 언어의 공식 사이트를 참고하여 설치합니다.
+> 위에 언급한 모든 프레임워크와 라이브러리가 설치되어 있다고 가정합니다. 설치되어 있지 않을 경우 아래 페이지를 참고하여 설치합니다.
+> 
+> - .NET: [.NET 7 SDK](https://dotnet.microsoft.com/download/dotnet/7.0?WT.mc_id=dotnet-91712-juyoo)
+> - Java: [SDKMAN](https://sdkman.io/install)
+> - Python: [pyenv](https://github.com/pyenv/pyenv), [pyenv for Windows](https://github.com/pyenv-win/pyenv-win)
+> - node.js: [nvm](https://github.com/nvm-sh/nvm), [nvm for Windows](https://github.com/coreybutler/nvm-windows)
 
 1. Issue API .NET 실행
+
     ```bash
     cd issue-api
     dotnet build
     dotnet run
     ```
+
 2. Chat API Java 실행
-    
+
     `application-dev.properties` 파일 생성
+
     ```bash
     cd chat-api/src/main/resources
     touch application-dev.properties
     ```
 
     `application-dev.properties` 파일에 아래 내용 추가
-    ```
+
+    ```bash
     AOAI_API_ENDPOINT=https://api.openai.com/v1/chat/completions
     AOAI_API_KEY=API_KEY_HERE
     AOAI_API_DEPLOYMENT_ID=gpt-3.5-turbo
 
     Auth__ApiKey=apikey
     ```
+
     스프링 부트 앱 실행
+
     ```bash
     cd chat-api
     ./mvnw spring-boot:run
     ```
+
     Chat API는 `/chat-api` 에 추가 `README.md`가 있으니 참고하세요.
 
 3. Storage API Python 실행
+
    ```bash
     cd storage-api
     python -m venv .venv
@@ -49,7 +62,9 @@
     pip install -r requirements.txt
     uvicorn main:app --reload #FastAPI 앱 실행
     ```
+
 4. Frontend React 실행
+
     ```bash
     cd web
     npm install
@@ -68,22 +83,24 @@ Visual Studio Code 좌측에 `Extension` 메뉴를 클릭해 `Azure`를 검색�
 
 설치 Extension들:
 
-* Azure Tools
-* Azure App Service
-* Azure Static Web Apps
-* Azure API Management
+- Azure Tools
+- Azure App Service
+- Azure Static Web Apps
+- Azure API Management
 
 ## API 앱 빌드하기
 
 Python 외 .NET과 Java는 빌드를 통해 결과물을 생성해야 합니다.
 
-* Issue API(.NET) 빌드
+- Issue API(.NET) 빌드
+
   ```bash
   cd issue-api
   dotnet build -c Release && dotnet publish -c Release
   ```
 
-* Chat API(Java) 빌드
+- Chat API(Java) 빌드
+
   ```bash
   cd chat-api
   ./mvnw clean package
@@ -102,9 +119,9 @@ Python 외 .NET과 Java는 빌드를 통해 결과물을 생성해야 합니다.
 
 여기서 각 앱 서비스에 맞는 경로를 선택합니다. .NET과 Java는 각 build 결과물인 `bin`과 `target` 폴더 안의 결과물을 선택합니다.
 
-* Issue API: `issue-api/bin/Release/net7.0/publish`
-* Chat API: `chat-api/target/chat-api-0.0.1-SNAPSHOT.jar`
-* Storage API: `storage-api`
+- Issue API: `issue-api/bin/Release/net7.0/publish`
+- Chat API: `chat-api/target/chat-api-0.0.1-SNAPSHOT.jar`
+- Storage API: `storage-api`
 
 ## 정적 웹 앱 배포 pipeline 수정하기
 
