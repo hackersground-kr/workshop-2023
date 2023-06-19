@@ -61,4 +61,4 @@
 * 리소스가 모두 프로비저닝 되기까지 기다립니다.
 * Azure Portal로 수동으로 프로비저닝한 것과 동일한 포맷을 유지하고 있음을 확인할 수 있습니다. 
 
-[API Management 수동 설정하기](./04-apim-config.md) 👈 이전 | 다음 👉 [Github Action으로 CI/CD 파이프라인 태우기](./06-ghactions.md)
+[API Management 수동 설정하기](./04-apim-config.md) 👈 이전 | 다음 👉 [GitHub Action으로 CI/CD 파이프라인 태우기](./06-ghactions.md)

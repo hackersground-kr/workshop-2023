@@ -18,7 +18,7 @@ Azure Portal에서 APIM으로 접속해 `API` 탭에서 `Add API`를 누릅니�
   * Chat API: `aoai`
   * Storage API: `storage`
 
-### Github Issues API(Issue API) Inbound policy 설정
+### GitHub Issues API(Issue API) Inbound policy 설정
 ```xml
 <policies>
     <inbound>
@@ -63,10 +63,10 @@ Azure Portal에서 APIM으로 접속해 `API` 탭에서 `Add API`를 누릅니�
 </policies>
 ```
 
-### Github Issues API(Storage API) policy 설정
+### GitHub Issues API(Storage API) policy 설정
 설정할 내용 없음
 
-### GithubIssuesSummary 라는 새로운 API 만들기
+### GitHubIssuesSummary 라는 새로운 API 만들기
 
 Open API 명세서 파일 경로: `infra/openapi-bff.yaml`
 
@@ -81,23 +81,23 @@ Open API 명세서 파일 경로: `infra/openapi-bff.yaml`
 * Issues: `/github/issues`
 * Storage: `/storage/issues`
 
-### APIM Github OAuth 인증 설정하기
-참고 링크: [Github OAuth 인증 설정하기](https://learn.microsoft.com/en-us/azure/api-management/authorizations-how-to-github)
+### APIM GitHub OAuth 인증 설정하기
+참고 링크: [GitHub OAuth 인증 설정하기](https://learn.microsoft.com/en-us/azure/api-management/authorizations-how-to-github)
 
 * 프로필 > Settings > Developer settings > OAuth Apps 에서 새로운 OAuth App 생성
 
-* Github에서 OAuth App 생성 시
+* GitHub에서 OAuth App 생성 시
   * Homepage URL: `https://{{.NET api 앱 이름}}.azurewebsites.net`
   * Callback URL: `https://authorization-manager.consent.azure-apim.net/redirect/apim/<YOUR-APIM-SERVICENAME>`
 * Client secrets 생성 후 값 복사
 * APIM의 보안 > 관리 ID > 상태 `켜기`
 * APIM의 APIs > 권한 부여 
   * 공급자 이름: `github-issues`
-  * ID 공급자: Github
-  * Client ID: Github OAuth Client ID 값
+  * ID 공급자: GitHub
+  * Client ID: GitHub OAuth Client ID 값
   * Client secret: 복사 해 둔 Client secrets 값
 
-* Github Login 
+* GitHub Login 
 * 액세스 정책
   * API Management service `apim-hg{랜덤숫자}` 선택
   * 구성원 추가 선택

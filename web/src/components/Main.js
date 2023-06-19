@@ -10,10 +10,10 @@ function Header() {
         </div>
     )
 }
-  
+
 function Content() {
     return (
-        <p className="content">Github Issue Summarizer<br></br>깃허브 레포의 정보를 <span style={{color:'#a6ff00'}}>유저이름 / 레포이름</span> 형식으로 입력해주세요.<br></br>
+        <p className="content">GitHub Issue Summarizer<br></br>깃허브 레포의 정보를 <span style={{color:'#a6ff00'}}>유저이름 / 레포이름</span> 형식으로 입력해주세요.<br></br>
             <span>User name / Repo name</span>
         </p>
     )
@@ -48,8 +48,8 @@ function Button() {
         //Get form input value git-user, git-repo
         const user = document.querySelector('.git-user').value;
         const repo = document.querySelector('.git-repo').value;
-        
-        //Trigger getIssues() with user & repo input 
+
+        //Trigger getIssues() with user & repo input
         // const issues = getIssues(user, repo);
         if (process.env.NODE_ENV === 'development') {
             console.log(process.env.NODE_ENV);
@@ -71,10 +71,10 @@ function Button() {
             sampleData.items.forEach((data) => {
                 setIssues(issues.push(data));
             });
-            
+
         } else {
             const response = await fetch(process.env.REACT_APP_BASE_URL + process.env.REACT_APP_ISSUE_ENDPOINT + '?user=' + user + '&repository=' + repo);
-        
+
             if (response.ok) {
                 const data = await response.json();
                 data.items.forEach((data) => {
@@ -109,10 +109,10 @@ function Button() {
 function Main() {
     return(
         <div className="Main">
-            <Header />  
+            <Header />
             <br></br>
             <Content />
-            <div className='flex items-center justify-center gap-3' style={{margin:'10px'}}> 
+            <div className='flex items-center justify-center gap-3' style={{margin:'10px'}}>
                 <InputForm />
                 <Button />
             </div>

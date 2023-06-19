@@ -1,11 +1,18 @@
-# Azure Portal에서 리소스 구성 설정하기
+# Azure 포털에서 리소스 구성 설정하기
 
 각 앱마다 설정해야 하는 부분들을 배포 전에 매뉴얼하게 설정합니다.
 
 ## API Key 생성하기
+
 랜덤으로 uuid string을 API key로 사용합니다. 이 key 값이 있어야 API를 호출할 수 있습니다.
+
 ```bash
+# PowerShell
+$api_key = $(New-Guid).Guid
+
+# bash/zsh
 api_key=$(uuidgen)
+
 echo $api_key
 ```
 
@@ -48,6 +55,9 @@ echo로 출력한 api_key 값을 복사합니다.
   ```
 
 ## Chat API 구성 설정하기
+
+> Chat API는 OpenAI 사의 ChatGPT API를 사용합니다. API Key는 [이곳](https://platform.openai.com/account/api-keys)에서 발급받을 수 있습니다.
+
 * 환경 변수 설정
   * `설정` > `구성` > `애플리케이션 설정` > `고급 편집` 에 아래의 환경 변수들을 추가합니다.
   ```json

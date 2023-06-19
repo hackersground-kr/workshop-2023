@@ -1,13 +1,16 @@
 # Visual Studio Code에서 원클릭 배포하기
 
 ## 로컬에서 앱 실행하기
+
 세션2의 Codespace를 이용할 때는 모든 언어 구성 팩, 프레임워크나 라이브러가 모두 설치되어 있기 떄문에 간편하게 실행할 수 있습니다. 
 
-하지만 사용자의 로컬 환경에서 이 앱을 모두 실행해서 테스트 하기 위해서는 .NET7, Java17, Python 3.11, Javascript 가 모두 설치 되어 있어야 하며 각 언어에 부합하는 툴체인과 라이브러리도 필요합니다.
+하지만 사용자의 로컬 환경에서 이 앱을 모두 실행해서 테스트 하기 위해서는 .NET7, Java17, Python 3.11, JavaScript 가 모두 설치 되어 있어야 하며 각 언어에 부합하는 툴체인과 라이브러리도 필요합니다.
 
 그렇기 때문에 이번 세션에서는 Visual Studio Code를 이용하여 바로 배포를 진행 한 후 테스트를 진행합니다.
-
+ 
 만약 로컬에서 앱을 실행해 보고 싶다면 아래와 같은 방법을 따릅니다.
+
+> 위에 언급한 모든 프레임워크와 라이브러리가 설치되어 있다고 가정합니다. 설치되어 있지 않을 경우 각 언어의 공식 사이트를 참고하여 설치합니다.
 
 1. Issue API .NET 실행
     ```bash
@@ -88,6 +91,8 @@ Python 외 .NET과 Java는 빌드를 통해 결과물을 생성해야 합니다.
 
 ## API 웹 앱 배포하기
 
+먼저 Visual Studio Code 안에서 Azure 확장 기능을 이용해 Azure에 로그인합니다.
+
 본인의 구독 밑에서 포털에서 만들어 둔 앱 서비스를 찾아 마우스 오른쪽을 클릭해 `Deploy to Web App`을 누릅니다.
 
 ![앱 서비스 배포](images/webapp_deploy.png)
@@ -103,7 +108,7 @@ Python 외 .NET과 Java는 빌드를 통해 결과물을 생성해야 합니다.
 
 ## 정적 웹 앱 배포 pipeline 수정하기
 
-정적 웹 앱은 portal에서 코드 배포를 Github Repo로 잡으면서 자동으로 CI/CD workflow가 생성됩니다.
+정적 웹 앱은 portal에서 코드 배포를 GitHub Repo로 잡으면서 자동으로 CI/CD workflow가 생성됩니다.
 
 혹시 현재 레포의 `.github/workflows` 폴더에 `azure-static-webapps-{정적 웹앱 URL 이름}.yml` 이 없다면 `git pull`로 변경 사항을 받아옵니다.
 
@@ -147,7 +152,7 @@ jobs:
       # 이 밑으로는 수정 사항 없음.
 ```
 
-### Github > Settings > Secrets and variables > Action 에 변수 추가하기
+### GitHub > Settings > Secrets and variables > Action 에 변수 추가하기
 
 workflow에서 `vars.AZURE_ENV_NAME_SWA` 변수를 사용하고 있으나 우리는 해당 변수를 정의하지 않았기 때문에 Variable에 `AZURE_ENV_NAME_SWA `를 추가합니다. 키 값은 리소스 그룹 이름(`rg-hg{랜덤숫자}`)의 `hg{랜덤숫자}`를 추가합니다.
 

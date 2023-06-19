@@ -1,15 +1,16 @@
-# 세션 1: Azure로 step by step 배포하기
+# 세션 1: Azure로 step-by-step 배포하기
 
-첫 번째 세션에서는 Azure에 익숙해 지기 위한 첫 단계로, 포털과 Visual Studio Code를 이용한 수동 배포와 `bicep`, `Azure Developer CLI`, `Github Action`을 이용한 자동 배포를 학습합니다.
+첫 번째 세션에서는 Azure에 익숙해 지기 위한 첫 단계로, 포털과 Visual Studio Code를 이용한 수동 배포와 `bicep`, `Azure Developer CLI`, `GitHub Action`을 이용한 자동 배포를 학습합니다.
 
-1. 수동으로 리소스들을 프로비저닝 하는 방법
-2. Visual Studio Code를 이용해서 수동으로 배포하는 방법
-3. IaC(Infra as Code)인 `bicep`과 `Azure Developer CLI`로 쉽게 자동 프로비저닝 하는 방법
-4. `Github Action`으로 자동 배포하는 방법
+1. [Azure 포털에서 리소스 생성하기](./01-portal-provision.md) & [Azure 포털에서 리소스 구성 설정하기](./02-portal-works.md)
+2. [Visual Studio Code에서 원클릭 배포하기](./03-vscode.md) & [API Management 수동 설정하기](./04-apim-config.md)
+3. [IaC(Infra as Code)인 `bicep`과 `Azure Developer CLI`로 쉽게 자동 프로비저닝 하는 방법](./05-bicep-azd-provision.md)
+4. [`GitHub Action`으로 자동 배포하는 방법](./06-ghactions.md)
 
 ## 사전 준비물
 
-* Azure 구독
+* [Azure 구독](https://azure.microsoft.com/ko-kr/free/?WT.mc_id=dotnet-91712-juyoo)
+* [ChatGPT API Key](https://platform.openai.com/account/api-keys)
 * Fork한 workshop 레포
 * `session01/manual` 브랜치 생성
 
