@@ -1,6 +1,14 @@
-# 세션 1: 애저 포털 이용하기
+# 세션 1: Azure로 step by step 배포하기
 
-TBD
+첫 번째 세션에서는 Azure에 익숙해 지기 위한 첫 단계로, 포털과 Visual Studio Code를 이용한 수동 배포와 `bicep`, `Azure Developer CLI`, `Github Action`을 이용한 자동 배포를 학습합니다.
+
+1. 수동으로 리소스들을 프로비저닝 하는 방법
+2. Visual Studio Code를 이용해서 수동으로 배포하는 방법
+3. IaC(Infra as Code)인 `bicep`과 `Azure Developer CLI`로 쉽게 자동 프로비저닝 하는 방법
+4. `Github Action`으로 자동 배포하는 방법
+
+## 사전 준비물
+
 
 ---
 
