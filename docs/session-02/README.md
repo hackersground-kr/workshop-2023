@@ -19,3 +19,8 @@ GitHub 코드스페이스와 코파일럿을 활용해서 애플리케이션을 
 - [GitHub 코파일럿 &ndash; 애저 Bicep으로 클라우드 인프라 만들기](./03-copilot-bicep.md)
 - [GitHub 코파일럿 &ndash; GitHub 액션 워크플로우 만들기](./04-copilot-gha.md)
 - [참고 문서](./05-references.md)
+
+
+## 따라하기
+
+[![유튜브 링크](./images/yt-thumbnail.png)](https://youtu.be/tpT5ATnWEQQ)
